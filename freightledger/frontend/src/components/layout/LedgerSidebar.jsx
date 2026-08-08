@@ -9,7 +9,6 @@ import {
   UserCog,
   LogOut,
   Settings,
-  Zap,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import UserProfileModal from './UserProfileModal';
