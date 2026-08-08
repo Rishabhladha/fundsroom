@@ -14,12 +14,12 @@ import { useAuthStore } from '../../store/authStore';
 import UserProfileModal from './UserProfileModal';
 
 const NAV_ITEMS = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard',  roles: ['ADMIN','SALES','WAREHOUSE','ACCOUNTS'] },
-  { to: '/customers', icon: Users,           label: 'Customers',  roles: ['ADMIN','SALES','ACCOUNTS'] },
-  { to: '/products',  icon: Package,         label: 'Products',   roles: ['ADMIN','SALES','WAREHOUSE','ACCOUNTS'] },
-  { to: '/challans',  icon: FileText,        label: 'Challans',   roles: ['ADMIN','SALES','WAREHOUSE','ACCOUNTS'] },
-  { to: '/stock-log', icon: ArrowLeftRight,  label: 'Stock Log',  roles: ['ADMIN','WAREHOUSE','ACCOUNTS'] },
-  { to: '/users',     icon: UserCog,         label: 'Team & Users', roles: ['ADMIN'] },
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', roles: ['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS'] },
+  { to: '/customers', icon: Users, label: 'Customers', roles: ['ADMIN', 'SALES', 'ACCOUNTS'] },
+  { to: '/products', icon: Package, label: 'Products', roles: ['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS'] },
+  { to: '/challans', icon: FileText, label: 'Challans', roles: ['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS'] },
+  { to: '/stock-log', icon: ArrowLeftRight, label: 'Stock Log', roles: ['ADMIN', 'WAREHOUSE', 'ACCOUNTS'] },
+  { to: '/users', icon: UserCog, label: 'Team & Users', roles: ['ADMIN'] },
 ];
 
 export default function LedgerSidebar() {
@@ -69,11 +69,10 @@ export default function LedgerSidebar() {
               <NavLink
                 key={to}
                 to={to}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-150 ${
-                  isActive
+                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-150 ${isActive
                     ? 'sidebar-tab-active font-semibold'
                     : 'text-slate-text/80 hover:bg-steel/30 hover:text-white'
-                }`}
+                  }`}
               >
                 <Icon size={16} className={isActive ? 'text-signal-amber' : 'text-slate-text/60'} />
                 <span>{label}</span>

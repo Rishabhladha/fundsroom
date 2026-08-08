@@ -28,9 +28,8 @@ export default function DataTable({
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-slate-text/60 ${
-                  col.align === 'right' ? 'text-right' : ''
-                }`}
+                className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-slate-text/60 ${col.align === 'right' ? 'text-right' : ''
+                  }`}
               >
                 {col.header}
               </th>
@@ -52,16 +51,14 @@ export default function DataTable({
               <tr
                 key={row.id || i}
                 onClick={() => onRowClick?.(row)}
-                className={`border-b border-steel/40 ${
-                  onRowClick ? 'cursor-pointer' : ''
-                }`}
+                className={`border-b border-steel/40 ${onRowClick ? 'cursor-pointer' : ''
+                  }`}
               >
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className={`px-4 py-3 ${col.align === 'right' ? 'text-right' : ''} ${
-                      col.mono ? 'font-mono text-sm' : ''
-                    }`}
+                    className={`px-4 py-3 ${col.align === 'right' ? 'text-right' : ''} ${col.mono ? 'font-mono text-sm' : ''
+                      }`}
                   >
                     {col.render ? col.render(row[col.key], row) : row[col.key]}
                   </td>

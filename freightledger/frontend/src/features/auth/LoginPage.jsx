@@ -203,10 +203,10 @@ export default function LoginPage() {
               Demo accounts
             </div>
             {[
-              ['admin@freightledger.com',     'Admin@1234',     'ADMIN'],
-              ['sales@freightledger.com',     'Sales@1234',     'SALES'],
+              ['admin@freightledger.com', 'Admin@1234', 'ADMIN'],
+              ['sales@freightledger.com', 'Sales@1234', 'SALES'],
               ['warehouse@freightledger.com', 'Warehouse@1234', 'WAREHOUSE'],
-              ['accounts@freightledger.com',  'Accounts@1234',  'ACCOUNTS'],
+              ['accounts@freightledger.com', 'Accounts@1234', 'ACCOUNTS'],
             ].map(([email, pass, role]) => (
               <button
                 key={role}

@@ -6,7 +6,9 @@
 /* Base styles                                                                  */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -21,7 +23,9 @@
   --slate-text: #D1D5DB;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -40,10 +44,23 @@ body {
 /* Scrollbar styling                                                            */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--ink); }
-::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #374151; }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--steel);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Focus states — 2px signal-amber outline on every interactive element       */
@@ -59,7 +76,10 @@ body {
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -112,9 +132,17 @@ body {
 }
 
 @keyframes stampImpact {
-  0%   { transform: rotate(-3deg) scale(1.15); }
-  70%  { transform: rotate(-3deg) scale(0.97); }
-  100% { transform: rotate(-3deg) scale(1.0); }
+  0% {
+    transform: rotate(-3deg) scale(1.15);
+  }
+
+  70% {
+    transform: rotate(-3deg) scale(0.97);
+  }
+
+  100% {
+    transform: rotate(-3deg) scale(1.0);
+  }
 }
 
 /* Sidebar tab active */
@@ -159,9 +187,18 @@ body {
   transition: filter 150ms ease, transform 80ms ease;
 }
 
-.btn-primary:hover { filter: brightness(1.1); }
-.btn-primary:active { transform: scale(0.98); }
-.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 
 /* Ghost button */
 .btn-ghost {
@@ -194,7 +231,9 @@ body {
   transition: background-color 150ms ease;
 }
 
-.btn-danger:hover { background-color: rgba(196, 80, 31, 0.12); }
+.btn-danger:hover {
+  background-color: rgba(196, 80, 31, 0.12);
+}
 
 /* Success button */
 .btn-success {
@@ -209,5 +248,11 @@ body {
   transition: filter 150ms ease;
 }
 
-.btn-success:hover { filter: brightness(1.1); }
-.btn-success:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-success:hover {
+  filter: brightness(1.1);
+}
+
+.btn-success:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

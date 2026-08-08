@@ -108,25 +108,25 @@ export default function ProductsListPage() {
     ...COLUMNS,
     ...(canEdit
       ? [
-          {
-            key: 'actions',
-            header: 'Action',
-            align: 'right',
-            render: (_, row) => (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation(); // prevent opening stock log drawer
-                  setEditProduct(row);
-                  setDrawerOpen(true);
-                }}
-                className="btn-ghost text-xs px-2.5 py-1"
-              >
-                Edit
-              </button>
-            ),
-          },
-        ]
+        {
+          key: 'actions',
+          header: 'Action',
+          align: 'right',
+          render: (_, row) => (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation(); // prevent opening stock log drawer
+                setEditProduct(row);
+                setDrawerOpen(true);
+              }}
+              className="btn-ghost text-xs px-2.5 py-1"
+            >
+              Edit
+            </button>
+          ),
+        },
+      ]
       : []),
   ];
 
