@@ -32,9 +32,9 @@ export default {
       },
       keyframes: {
         stampImpact: {
-          '0%':   { transform: 'rotate(-3deg) scale(1.18)', opacity: '0.6' },
-          '70%':  { transform: 'rotate(-3deg) scale(0.96)', opacity: '1' },
-          '100%': { transform: 'rotate(-3deg) scale(1.0)', opacity: '1' },
+          '0%':   { transform: 'scale(1.15)', opacity: '0.6' },
+          '70%':  { transform: 'scale(0.97)', opacity: '1' },
+          '100%': { transform: 'scale(1.0)', opacity: '1' },
         },
         fadeIn: {
           '0%':   { opacity: '0', transform: 'translateY(4px)' },

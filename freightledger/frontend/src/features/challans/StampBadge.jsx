@@ -25,25 +25,21 @@ export default function StampBadge({ status, large = false }) {
   return (
     <div
       className={`inline-flex items-center justify-center ${animating ? 'animate-stamp-impact' : ''}`}
-      style={{
-        transform: 'rotate(-4deg)',
-        display: 'inline-flex',
-      }}
+      style={{ display: 'inline-flex' }}
     >
       <span
         style={{
           color: config.color,
           borderColor: config.color,
           backgroundColor: config.bg,
-          border: `2px solid ${config.color}`,
-          boxShadow: `0 0 0 1px ${config.color} inset`,
-          borderRadius: '4px',
-          fontFamily: '"IBM Plex Mono", monospace',
+          border: `1px solid ${config.color}`,
+          borderRadius: '6px',
+          fontFamily: '"JetBrains Mono", monospace',
           fontWeight: 700,
-          letterSpacing: '0.14em',
+          letterSpacing: '0.08em',
           textTransform: 'uppercase',
-          padding: large ? '8px 24px' : '4px 14px',
-          fontSize: large ? '18px' : '12px',
+          padding: large ? '8px 20px' : '4px 12px',
+          fontSize: large ? '14px' : '11px',
         }}
       >
         {status}
