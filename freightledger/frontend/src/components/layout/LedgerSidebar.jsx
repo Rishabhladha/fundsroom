@@ -37,18 +37,21 @@ export default function LedgerSidebar() {
         className="flex flex-col h-full bg-ink-raised border-r border-steel"
         style={{ width: '220px', minWidth: '220px' }}
       >
-        {/* Logo / wordmark */}
-        <div className="px-5 py-4 border-b border-steel">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded bg-signal-amber text-ink flex items-center justify-center font-display font-bold text-sm shadow-sm">
-              FL
+        {/* Brand Header */}
+        <div className="px-5 py-4 border-b border-steel/60 bg-ink-card/60">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-crimson to-signal-amber p-0.5 shadow-crimson-glow flex-shrink-0">
+              <div className="w-full h-full bg-ink rounded-[7px] flex items-center justify-center font-display font-black text-xs text-crimson">
+                FL
+              </div>
             </div>
             <div>
-              <div className="font-display font-bold text-sm tracking-wide text-signal-amber">
+              <div className="font-display font-bold text-sm tracking-wider text-white flex items-center gap-1.5">
                 FREIGHTLEDGER
               </div>
-              <div className="text-[11px] text-slate-text/50 font-mono">
-                Operations Portal
+              <div className="text-[10px] text-crimson font-mono flex items-center gap-1.5 font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-crimson animate-pulse" />
+                SYSTEM ONLINE
               </div>
             </div>
           </div>
@@ -69,13 +72,22 @@ export default function LedgerSidebar() {
               <NavLink
                 key={to}
                 to={to}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-150 ${isActive
-                    ? 'sidebar-tab-active font-semibold'
-                    : 'text-slate-text/80 hover:bg-steel/30 hover:text-white'
-                  }`}
+                className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all duration-150 group ${
+                  isActive
+                    ? 'bg-gradient-to-r from-crimson/15 to-transparent text-crimson border-l-2 border-crimson shadow-sm'
+                    : 'text-slate-text/80 hover:bg-steel/40 hover:text-white'
+                }`}
               >
-                <Icon size={16} className={isActive ? 'text-signal-amber' : 'text-slate-text/60'} />
-                <span>{label}</span>
+                <div className="flex items-center gap-3">
+                  <Icon
+                    size={16}
+                    className={`transition-colors ${
+                      isActive ? 'text-crimson' : 'text-slate-text/60 group-hover:text-signal-amber'
+                    }`}
+                  />
+                  <span>{label}</span>
+                </div>
+                {isActive && <Zap size={12} className="text-crimson animate-pulse" />}
               </NavLink>
             );
           })}

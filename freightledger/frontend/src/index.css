@@ -6,88 +6,85 @@
 /* Base styles                                                                  */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 :root {
-  --ink: #090D16;
-  --ink-raised: #121824;
-  --steel: #1F2937;
-  --paper: #F3F4F6;
-  --signal-amber: #F59E0B;
-  --ledger-green: #10B981;
-  --rust-alert: #F43F5E;
-  --slate-text: #D1D5DB;
+  --ink: #0D0E11;
+  --ink-raised: #14161C;
+  --ink-card: #1A1D26;
+  --steel: #282C3A;
+  --steel-light: #363B4E;
+  --crimson: #FF2A55;
+  --crimson-glow: #FF3366;
+  --signal-amber: #FFB703;
+  --ledger-green: #00E676;
+  --cyan-glow: #00E5FF;
+  --rust-alert: #FF2A55;
+  --slate-text: #8E95A5;
+  --slate-bright: #F1F5F9;
 }
 
-html,
-body,
-#root {
+html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: var(--ink);
+  color: var(--slate-bright);
 }
 
 body {
-  background-color: var(--ink);
-  color: var(--slate-text);
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 42, 85, 0.04) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(255, 183, 3, 0.03) 0px, transparent 50%);
+  background-attachment: fixed;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Scrollbar styling                                                            */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--ink);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--steel);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #374151;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--crimson-glow); }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
-/* Focus states — 2px signal-amber outline on every interactive element       */
+/* Focus States                                                                 */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 :focus-visible {
-  outline: 2px solid var(--signal-amber);
+  outline: 2px solid var(--crimson-glow);
   outline-offset: 2px;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
-/* Reduced motion — swap animations for instant opacity changes                 */
+/* Glassmorphism & Custom Cards                                                */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-@media (prefers-reduced-motion: reduce) {
+.cyber-card {
+  background: rgba(26, 29, 38, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+.cyber-card:hover {
+  border-color: rgba(255, 42, 85, 0.35);
+  box-shadow: 0 4px 24px -2px rgba(255, 42, 85, 0.15);
+}
+
+.cyber-card-glow {
+  background: rgba(26, 29, 38, 0.95);
+  border: 1px solid rgba(255, 42, 85, 0.3);
+  box-shadow: 0 0 25px rgba(255, 42, 85, 0.15);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
-/* Utility classes                                                              */
+/* Utility typography                                                           */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 .font-mono-data {
@@ -98,15 +95,28 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* Table hover */
+/* Glowing text gradients */
+.text-gradient-crimson {
+  background: linear-gradient(135deg, #FF3366 0%, #FF2A55 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-amber {
+  background: linear-gradient(135deg, #FFB703 0%, #FB8500 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Table styling */
 .ledger-table tbody tr {
   border-left: 3px solid transparent;
-  transition: border-color 120ms ease, background-color 120ms ease;
+  transition: all 150ms ease;
 }
 
 .ledger-table tbody tr:hover {
-  border-left-color: var(--signal-amber);
-  background-color: rgba(31, 41, 55, 0.4);
+  border-left-color: var(--crimson-glow);
+  background-color: rgba(40, 44, 58, 0.5);
 }
 
 /* Status badge base — sleek straight pill */
@@ -123,7 +133,7 @@ body {
   text-transform: uppercase;
   border: 1px solid currentColor;
   transform: none;
-  background-color: rgba(14, 22, 38, 0.6);
+  background-color: rgba(20, 22, 28, 0.7);
   backdrop-filter: blur(4px);
 }
 

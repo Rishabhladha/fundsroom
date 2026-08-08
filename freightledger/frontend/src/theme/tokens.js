@@ -3,14 +3,18 @@
 // All actual styling uses the Tailwind classes defined in tailwind.config.js
 
 export const COLORS = {
-  ink: '#090D16',
-  inkRaised: '#121824',
-  steel: '#1F2937',
-  paper: '#F3F4F6',
-  signalAmber: '#F59E0B',
-  ledgerGreen: '#10B981',
-  rustAlert: '#F43F5E',
-  slateText: '#D1D5DB',
+  ink: '#0D0E11',
+  inkRaised: '#14161C',
+  steel: '#282C3A',
+  paper: '#F8FAFC',
+  crimson: '#FF2A55',
+  crimsonGlow: '#FF3366',
+  signalAmber: '#FFB703',
+  ledgerGreen: '#00E676',
+  cyanGlow: '#00E5FF',
+  rustAlert: '#FF2A55',
+  slateText: '#8E95A5',
+  slateBright: '#F1F5F9',
 };
 
 export const FONTS = {
@@ -19,26 +23,28 @@ export const FONTS = {
   mono: '"JetBrains Mono", monospace',
 };
 
-// Status → color mapping used in stamp badges
+// Status → color mapping used in status badges
 export const STATUS_COLORS = {
   // Challan statuses
-  DRAFT: { color: '#D1D5DB', bg: 'rgba(209,213,219,0.1)' },
-  CONFIRMED: { color: '#10B981', bg: 'rgba(16,185,129,0.1)' },
-  CANCELLED: { color: '#F43F5E', bg: 'rgba(244,63,94,0.1)' },
+  DRAFT: { color: '#8E95A5', bg: 'rgba(142,149,165,0.15)' },
+  CONFIRMED: { color: '#00E676', bg: 'rgba(0,230,118,0.15)' },
+  IN_TRANSIT: { color: '#00E5FF', bg: 'rgba(0,229,255,0.15)' },
+  DELIVERED: { color: '#00E676', bg: 'rgba(0,230,118,0.15)' },
+  CANCELLED: { color: '#FF2A55', bg: 'rgba(255,42,85,0.15)' },
 
   // Customer statuses
-  LEAD: { color: '#F59E0B', bg: 'rgba(245,158,11,0.1)' },
-  ACTIVE: { color: '#10B981', bg: 'rgba(16,185,129,0.1)' },
-  INACTIVE: { color: '#9CA3AF', bg: 'rgba(156,163,175,0.1)' },
+  LEAD: { color: '#FFB703', bg: 'rgba(255,183,3,0.15)' },
+  ACTIVE: { color: '#00E676', bg: 'rgba(0,230,118,0.15)' },
+  INACTIVE: { color: '#64748B', bg: 'rgba(100,116,139,0.15)' },
 
   // Stock movement types
-  IN: { color: '#10B981', bg: 'rgba(16,185,129,0.1)' },
-  OUT: { color: '#F43F5E', bg: 'rgba(244,63,94,0.1)' },
+  IN: { color: '#00E676', bg: 'rgba(0,230,118,0.15)' },
+  OUT: { color: '#FF2A55', bg: 'rgba(255,42,85,0.15)' },
 };
 
 // Customer type colors
 export const TYPE_COLORS = {
-  RETAIL: '#9CA3AF',
-  WHOLESALE: '#F59E0B',
-  DISTRIBUTOR: '#38BDF8',
+  RETAIL: '#8E95A5',
+  WHOLESALE: '#FFB703',
+  DISTRIBUTOR: '#00E5FF',
 };
