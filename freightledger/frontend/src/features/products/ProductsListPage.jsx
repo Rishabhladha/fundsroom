@@ -104,6 +104,32 @@ export default function ProductsListPage() {
 
   const canEdit = user?.role === 'ADMIN' || user?.role === 'WAREHOUSE';
 
+  const columnsWithActions = [
+    ...COLUMNS,
+    ...(canEdit
+      ? [
+          {
+            key: 'actions',
+            header: 'Action',
+            align: 'right',
+            render: (_, row) => (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation(); // prevent opening stock log drawer
+                  setEditProduct(row);
+                  setDrawerOpen(true);
+                }}
+                className="btn-ghost text-xs px-2.5 py-1"
+              >
+                Edit
+              </button>
+            ),
+          },
+        ]
+      : []),
+  ];
+
   const handleRowClick = useCallback((row) => {
     setMovLogProduct(row);
   }, []);
@@ -172,7 +198,7 @@ export default function ProductsListPage() {
           style={{ backgroundColor: '#1B2029', border: '1px solid #2B3240' }}
         >
           <DataTable
-            columns={COLUMNS}
+            columns={columnsWithActions}
             data={data?.data || []}
             loading={isLoading}
             emptyMessage="No products found — add the first product to start tracking inventory."
@@ -182,7 +208,7 @@ export default function ProductsListPage() {
         </div>
 
         <p className="text-xs text-slate-text/40 mt-3 font-mono">
-          Click any row to view stock movement log and adjust stock.
+          Click any row to view stock movement log or click "Edit" to modify product parameters.
         </p>
       </div>
 
@@ -200,7 +226,9 @@ export default function ProductsListPage() {
           canAdjust={canEdit}
           onClose={() => setMovLogProduct(null)}
           onEdit={() => {
-            setEditProduct(movLogProduct);
+            const p = movLogProduct;
+            setMovLogProduct(null); // close stock log first so drawers don't stack awkwardly
+            setEditProduct(p);
             setDrawerOpen(true);
           }}
         />

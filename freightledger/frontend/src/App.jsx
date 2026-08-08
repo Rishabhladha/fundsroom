@@ -9,6 +9,7 @@ import ChallansListPage from './features/challans/ChallansListPage';
 import ChallanBuilderPage from './features/challans/ChallanBuilderPage';
 import ChallanDetailPage from './features/challans/ChallanDetailPage';
 import StockLogPage from './features/products/StockLogPage';
+import UserManagementPage from './features/admin/UserManagementPage';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ProtectedRoute — redirects to /login if no token in Zustand store
@@ -62,6 +63,10 @@ export default function App() {
       <Route
         path="/stock-log"
         element={<ProtectedRoute><StockLogPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/users"
+        element={<ProtectedRoute><UserManagementPage /></ProtectedRoute>}
       />
 
       {/* Default redirects */}

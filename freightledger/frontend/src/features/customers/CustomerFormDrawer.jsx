@@ -1,14 +1,6 @@
-import { useState } from 'react';
+  import { useState, useEffect } from 'react';
 import Drawer from '../../components/ui/Drawer';
 import { useCreateCustomer, useUpdateCustomer } from './useCustomers';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// CustomerFormDrawer — create or edit a customer
-// Props:
-//   isOpen   — boolean
-//   onClose  — () => void
-//   customer — customer object (null = create mode)
-// ─────────────────────────────────────────────────────────────────────────────
 
 const EMPTY = {
   name: '', mobile: '', email: '', business_name: '',
@@ -18,16 +10,30 @@ const EMPTY = {
 
 export default function CustomerFormDrawer({ isOpen, onClose, customer }) {
   const isEdit = !!customer;
-  const [form, setForm] = useState(isEdit ? { ...EMPTY, ...customer } : EMPTY);
+  const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState(null);
 
-  // Reset form when drawer opens
-  useState(() => {
+  // Synchronize form values whenever drawer opens or customer changes
+  useEffect(() => {
     if (isOpen) {
-      setForm(isEdit ? { ...EMPTY, ...customer } : EMPTY);
+      if (customer) {
+        setForm({
+          name: customer.name || '',
+          mobile: customer.mobile || '',
+          email: customer.email || '',
+          business_name: customer.business_name || '',
+          gst_number: customer.gst_number || '',
+          type: customer.type || 'RETAIL',
+          address: customer.address || '',
+          status: customer.status || 'LEAD',
+          follow_up_date: customer.follow_up_date ? customer.follow_up_date.split('T')[0] : '',
+        });
+      } else {
+        setForm(EMPTY);
+      }
       setError(null);
     }
-  });
+  }, [isOpen, customer]);
 
   const { mutate: create, isPending: creating } = useCreateCustomer();
   const { mutate: update, isPending: updating } = useUpdateCustomer(customer?.id);

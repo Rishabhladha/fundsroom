@@ -134,3 +134,105 @@ export async function getMe(req: Request, res: Response, next: NextFunction): Pr
     next(err);
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /api/auth/profile
+// Allows authenticated user to update their name or change password.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    if (!req.user) throw new AppError(401, 'Not authenticated', 'Unauthorized');
+
+    const { name, password, newPassword } = req.body as Record<string, string>;
+
+    const userRes = await query<User>('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    const user = userRes.rows[0];
+    if (!user) throw new AppError(404, 'User not found', 'NotFound');
+
+    let updatedName = user.name;
+    let updatedHash = user.password_hash;
+
+    if (name && name.trim()) {
+      updatedName = name.trim();
+    }
+
+    if (newPassword) {
+      if (newPassword.length < 8) {
+        throw new AppError(400, 'New password must be at least 8 characters', 'ValidationError');
+      }
+      if (password) {
+        const match = await bcrypt.compare(password, user.password_hash);
+        if (!match) throw new AppError(400, 'Current password is incorrect', 'ValidationError');
+      }
+      updatedHash = await bcrypt.hash(newPassword, 10);
+    }
+
+    const result = await query<User>(
+      `UPDATE users
+       SET name = $1, password_hash = $2
+       WHERE id = $3
+       RETURNING id, name, email, role, is_active, created_at`,
+      [updatedName, updatedHash, req.user.id]
+    );
+
+    res.json({ message: 'Profile updated successfully', data: result.rows[0] });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/auth/users
+// Admin only — list all users
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await query<Omit<User, 'password_hash'>>(
+      `SELECT id, name, email, role, is_active, created_at
+       FROM users
+       ORDER BY created_at DESC`
+    );
+
+    res.json({ data: result.rows });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /api/auth/users/:id/status
+// Admin only — toggle user active/deactive status or change role
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function toggleUserStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+    const { is_active, role } = req.body as { is_active?: boolean; role?: Role };
+
+    if (req.user?.id === id && is_active === false) {
+      throw new AppError(400, 'You cannot deactivate your own admin account', 'ValidationError');
+    }
+
+    const userRes = await query<User>('SELECT * FROM users WHERE id = $1', [id]);
+    if (userRes.rows.length === 0) throw new AppError(404, 'User not found', 'NotFound');
+
+    const current = userRes.rows[0];
+    const newActive = typeof is_active === 'boolean' ? is_active : current.is_active;
+    const newRole = role && ROLES.includes(role) ? role : current.role;
+
+    const result = await query<User>(
+      `UPDATE users
+       SET is_active = $1, role = $2
+       WHERE id = $3
+       RETURNING id, name, email, role, is_active, created_at`,
+      [newActive, newRole, id]
+    );
+
+    res.json({ message: 'User updated successfully', data: result.rows[0] });
+  } catch (err) {
+    next(err);
+  }
+}
+

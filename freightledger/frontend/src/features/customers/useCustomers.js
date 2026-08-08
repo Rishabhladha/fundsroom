@@ -68,3 +68,12 @@ export function useAddFollowUp(customerId) {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['follow-ups', customerId] }),
   });
 }
+
+// Delete a follow-up note
+export function useDeleteFollowUp(customerId) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (followUpId) => api.delete(`/customers/${customerId}/follow-ups/${followUpId}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['follow-ups', customerId] }),
+  });
+}

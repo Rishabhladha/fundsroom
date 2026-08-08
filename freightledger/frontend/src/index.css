@@ -11,14 +11,14 @@
 }
 
 :root {
-  --ink: #12151B;
-  --ink-raised: #1B2029;
-  --steel: #2B3240;
-  --paper: #EDE6D6;
-  --signal-amber: #F2A93B;
-  --ledger-green: #3F9967;
-  --rust-alert: #C4501F;
-  --slate-text: #C7CCD6;
+  --ink: #090D16;
+  --ink-raised: #121824;
+  --steel: #1F2937;
+  --paper: #F3F4F6;
+  --signal-amber: #F59E0B;
+  --ledger-green: #10B981;
+  --rust-alert: #F43F5E;
+  --slate-text: #D1D5DB;
 }
 
 html, body, #root {
@@ -30,7 +30,7 @@ html, body, #root {
 body {
   background-color: var(--ink);
   color: var(--slate-text);
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -43,7 +43,7 @@ body {
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--ink); }
 ::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #3D4556; }
+::-webkit-scrollbar-thumb:hover { background: #374151; }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Focus states — 2px signal-amber outline on every interactive element       */
@@ -71,22 +71,22 @@ body {
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 .font-mono-data {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .font-display {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* Table hover — steel left-border, no lift gimmicks */
+/* Table hover */
 .ledger-table tbody tr {
   border-left: 3px solid transparent;
   transition: border-color 120ms ease, background-color 120ms ease;
 }
 
 .ledger-table tbody tr:hover {
-  border-left-color: var(--steel);
-  background-color: rgba(43, 50, 64, 0.3);
+  border-left-color: var(--signal-amber);
+  background-color: rgba(31, 41, 55, 0.4);
 }
 
 /* Stamp badge base */
@@ -95,16 +95,16 @@ body {
   align-items: center;
   justify-content: center;
   padding: 3px 10px;
-  border-radius: 3px;
-  font-family: 'IBM Plex Mono', monospace;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   border: 2px solid currentColor;
   box-shadow: 0 0 0 1px currentColor inset;
-  transform: rotate(-4deg);
-  background-color: rgba(237, 230, 214, 0.06);
+  transform: rotate(-3deg);
+  background-color: rgba(243, 244, 246, 0.04);
 }
 
 .stamp-badge.animating {
@@ -112,30 +112,29 @@ body {
 }
 
 @keyframes stampImpact {
-  0%   { transform: rotate(-4deg) scale(1.15); }
-  70%  { transform: rotate(-4deg) scale(0.97); }
-  100% { transform: rotate(-4deg) scale(1.0); }
+  0%   { transform: rotate(-3deg) scale(1.15); }
+  70%  { transform: rotate(-3deg) scale(0.97); }
+  100% { transform: rotate(-3deg) scale(1.0); }
 }
 
 /* Sidebar tab active */
 .sidebar-tab-active {
   border-left: 3px solid var(--signal-amber);
-  transform: translateX(2px);
-  background-color: rgba(242, 169, 59, 0.08);
+  background-color: rgba(245, 158, 11, 0.12);
   color: var(--signal-amber);
 }
 
 /* Input fields */
 .field-input {
-  background-color: var(--steel);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: var(--slate-text);
+  background-color: #111827;
+  border: 1px solid #374151;
+  color: #F3F4F6;
   border-radius: 6px;
   padding: 8px 12px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   width: 100%;
-  transition: border-color 150ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .field-input:focus {

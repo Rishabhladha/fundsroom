@@ -4,23 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        // FreightLedger Design Tokens
-        ink: '#12151B',
-        'ink-raised': '#1B2029',
-        steel: '#2B3240',
-        paper: '#EDE6D6',
-        'signal-amber': '#F2A93B',
-        'ledger-green': '#3F9967',
-        'rust-alert': '#C4501F',
-        'slate-text': '#C7CCD6',
+        // FreightLedger Modern High-Contrast Industrial Palette
+        ink: '#090D16',
+        'ink-raised': '#121824',
+        steel: '#1F2937',
+        paper: '#F3F4F6',
+        'signal-amber': '#F59E0B',
+        'ledger-green': '#10B981',
+        'rust-alert': '#F43F5E',
+        'slate-text': '#D1D5DB',
       },
       fontFamily: {
-        // Space Grotesk — display/headers
-        display: ['"Space Grotesk"', 'sans-serif'],
-        // IBM Plex Sans — body/UI
-        sans: ['"IBM Plex Sans"', 'sans-serif'],
-        // IBM Plex Mono — all numeric/code data
-        mono: ['"IBM Plex Mono"', 'monospace'],
+        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+        sans: ['"Inter"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
       },
       animation: {
         'stamp-impact': 'stampImpact 150ms ease-out forwards',

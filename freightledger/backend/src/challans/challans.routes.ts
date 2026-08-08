@@ -22,12 +22,12 @@ router.get('/:id', getChallan);
 // Invoice PDF — ADMIN, ACCOUNTS, SALES (own challan check happens inside controller)
 router.get('/:id/invoice.pdf', requireRole('ADMIN', 'ACCOUNTS', 'SALES'), getInvoicePdf);
 
-// Create/edit DRAFT — ADMIN, SALES
-router.post('/', requireRole('ADMIN', 'SALES'), createChallan);
-router.patch('/:id', requireRole('ADMIN', 'SALES'), updateChallan);
+// Create/edit DRAFT — ADMIN, SALES, ACCOUNTS
+router.post('/', requireRole('ADMIN', 'SALES', 'ACCOUNTS'), createChallan);
+router.patch('/:id', requireRole('ADMIN', 'SALES', 'ACCOUNTS'), updateChallan);
 
-// Confirm/cancel — ADMIN, SALES
-router.post('/:id/confirm', requireRole('ADMIN', 'SALES'), confirmChallan);
-router.post('/:id/cancel', requireRole('ADMIN', 'SALES'), cancelChallan);
+// Confirm/cancel — ADMIN, ACCOUNTS (Sales creates draft, Accounts/Admin finalizes financial states)
+router.post('/:id/confirm', requireRole('ADMIN', 'ACCOUNTS'), confirmChallan);
+router.post('/:id/cancel', requireRole('ADMIN', 'ACCOUNTS'), cancelChallan);
 
 export default router;

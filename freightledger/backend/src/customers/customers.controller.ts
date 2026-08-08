@@ -262,3 +262,24 @@ export async function getFollowUps(
     next(err);
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DELETE /api/customers/:id/follow-ups/:followUpId
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function deleteFollowUp(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const { followUpId } = req.params;
+    const result = await query('DELETE FROM follow_ups WHERE id = $1 RETURNING id', [followUpId]);
+    if (result.rows.length === 0) {
+      throw new AppError(404, 'Follow-up note not found', 'NotFound');
+    }
+    res.json({ message: 'Follow-up note deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
+}

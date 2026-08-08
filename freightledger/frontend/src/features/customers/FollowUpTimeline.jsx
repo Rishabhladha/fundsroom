@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useFollowUps, useAddFollowUp } from './useCustomers';
-import { MessageSquarePlus, User, Clock } from 'lucide-react';
+import { useFollowUps, useAddFollowUp, useDeleteFollowUp } from './useCustomers';
+import { MessageSquarePlus, User, Clock, Trash2 } from 'lucide-react';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FollowUpTimeline — chronological log of follow-up notes for a customer
@@ -9,6 +9,7 @@ import { MessageSquarePlus, User, Clock } from 'lucide-react';
 export default function FollowUpTimeline({ customerId, canAdd }) {
   const { data, isLoading } = useFollowUps(customerId);
   const { mutate: addNote, isPending } = useAddFollowUp(customerId);
+  const { mutate: deleteNote } = useDeleteFollowUp(customerId);
 
   const [note, setNote] = useState('');
   const [error, setError] = useState(null);
@@ -25,23 +26,26 @@ export default function FollowUpTimeline({ customerId, canAdd }) {
     });
   }
 
+  function handleDelete(followUpId) {
+    if (window.confirm('Delete this follow-up note?')) {
+      deleteNote(followUpId);
+    }
+  }
+
   return (
     <div
-      className="rounded-lg"
-      style={{ backgroundColor: '#1B2029', border: '1px solid #2B3240' }}
+      className="rounded-lg border border-steel bg-ink-raised"
     >
       {/* Header */}
       <div
-        className="flex items-center justify-between px-5 py-4 border-b"
-        style={{ borderColor: '#2B3240' }}
+        className="flex items-center justify-between px-5 py-4 border-b border-steel"
       >
         <h3 className="font-display font-semibold text-sm text-white flex items-center gap-2">
           <MessageSquarePlus size={15} className="text-signal-amber" />
-          Follow-up Timeline
+          Follow-up History
           {followUps.length > 0 && (
             <span
-              className="font-mono text-xs px-1.5 py-0.5 rounded"
-              style={{ backgroundColor: '#2B3240', color: '#6B7280' }}
+              className="font-mono text-xs px-1.5 py-0.5 rounded bg-steel text-slate-text"
             >
               {followUps.length}
             </span>
@@ -51,16 +55,16 @@ export default function FollowUpTimeline({ customerId, canAdd }) {
 
       {/* Add note form */}
       {canAdd && (
-        <form onSubmit={handleAdd} className="px-5 py-4 border-b" style={{ borderColor: '#2B3240' }}>
+        <form onSubmit={handleAdd} className="px-5 py-4 border-b border-steel">
           {error && (
-            <div className="mb-2 text-xs px-3 py-2 rounded" style={{ backgroundColor: 'rgba(196,80,31,0.1)', color: '#C4501F' }}>
+            <div className="mb-2 text-xs px-3 py-2 rounded bg-rust-alert/10 text-rust-alert border border-rust-alert/30">
               {error}
             </div>
           )}
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Log a call, meeting, or note…"
+            placeholder="Log call outcome, next meeting, or order update…"
             rows={2}
             className="field-input mb-2"
             style={{ resize: 'vertical' }}
@@ -69,9 +73,9 @@ export default function FollowUpTimeline({ customerId, canAdd }) {
           <button
             type="submit"
             disabled={!note.trim() || isPending}
-            className="btn-primary text-sm"
+            className="btn-primary text-xs"
           >
-            {isPending ? 'Adding…' : 'Add Note'}
+            {isPending ? 'Saving…' : 'Log Note'}
           </button>
         </form>
       )}
@@ -92,39 +96,50 @@ export default function FollowUpTimeline({ customerId, canAdd }) {
           </div>
         ) : followUps.length === 0 ? (
           <div className="py-6 text-center">
-            <MessageSquarePlus size={28} className="mx-auto mb-3" style={{ color: '#2B3240' }} />
-            <p className="text-sm italic" style={{ color: '#4A5568' }}>
-              No follow-up notes yet — log the first interaction above.
+            <MessageSquarePlus size={28} className="mx-auto mb-2 text-steel" />
+            <p className="text-sm italic text-slate-text/50">
+              No follow-up notes yet — log interaction details above.
             </p>
           </div>
         ) : (
           followUps.map((fu, i) => (
-            <div key={fu.id} className="flex gap-3">
+            <div key={fu.id} className="flex gap-3 group">
               {/* Timeline track */}
               <div className="flex flex-col items-center">
                 <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: '#2B3240', border: '2px solid #F2A93B' }}
+                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-steel border-2 border-signal-amber"
                 >
-                  <User size={10} style={{ color: '#F2A93B' }} />
+                  <User size={10} className="text-signal-amber" />
                 </div>
                 {i < followUps.length - 1 && (
-                  <div className="w-px flex-1 mt-1 mb-1" style={{ backgroundColor: '#2B3240' }} />
+                  <div className="w-px flex-1 mt-1 mb-1 bg-steel" />
                 )}
               </div>
 
               {/* Content */}
-              <div className={`pb-5 flex-1 ${i === followUps.length - 1 ? '' : ''}`}>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium text-white">{fu.created_by_name}</span>
-                  <span className="text-xs font-mono flex items-center gap-1" style={{ color: '#4A5568' }}>
-                    <Clock size={10} />
-                    {new Date(fu.created_at).toLocaleDateString('en-IN', {
-                      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
-                    })}
-                  </span>
+              <div className="pb-5 flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-white">{fu.created_by_name}</span>
+                    <span className="text-xs font-mono text-slate-text/50 flex items-center gap-1">
+                      <Clock size={10} />
+                      {new Date(fu.created_at).toLocaleDateString('en-IN', {
+                        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
+                  {canAdd && (
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(fu.id)}
+                      className="opacity-0 group-hover:opacity-100 text-rust-alert hover:bg-rust-alert/10 p-1 rounded transition-all"
+                      title="Delete note"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  )}
                 </div>
-                <p className="text-sm leading-relaxed" style={{ color: '#C7CCD6' }}>
+                <p className="text-sm leading-relaxed text-slate-text/90">
                   {fu.note}
                 </p>
               </div>

@@ -3,42 +3,42 @@
 // All actual styling uses the Tailwind classes defined in tailwind.config.js
 
 export const COLORS = {
-  ink: '#12151B',
-  inkRaised: '#1B2029',
-  steel: '#2B3240',
-  paper: '#EDE6D6',
-  signalAmber: '#F2A93B',
-  ledgerGreen: '#3F9967',
-  rustAlert: '#C4501F',
-  slateText: '#C7CCD6',
+  ink: '#090D16',
+  inkRaised: '#121824',
+  steel: '#1F2937',
+  paper: '#F3F4F6',
+  signalAmber: '#F59E0B',
+  ledgerGreen: '#10B981',
+  rustAlert: '#F43F5E',
+  slateText: '#D1D5DB',
 };
 
 export const FONTS = {
-  display: '"Space Grotesk", sans-serif',
-  sans: '"IBM Plex Sans", sans-serif',
-  mono: '"IBM Plex Mono", monospace',
+  display: '"Plus Jakarta Sans", sans-serif',
+  sans: '"Inter", sans-serif',
+  mono: '"JetBrains Mono", monospace',
 };
 
 // Status → color mapping used in stamp badges
 export const STATUS_COLORS = {
   // Challan statuses
-  DRAFT: { color: '#C7CCD6', bg: 'rgba(199,204,214,0.08)' },
-  CONFIRMED: { color: '#3F9967', bg: 'rgba(63,153,103,0.08)' },
-  CANCELLED: { color: '#C4501F', bg: 'rgba(196,80,31,0.08)' },
+  DRAFT: { color: '#D1D5DB', bg: 'rgba(209,213,219,0.1)' },
+  CONFIRMED: { color: '#10B981', bg: 'rgba(16,185,129,0.1)' },
+  CANCELLED: { color: '#F43F5E', bg: 'rgba(244,63,94,0.1)' },
 
   // Customer statuses
-  LEAD: { color: '#F2A93B', bg: 'rgba(242,169,59,0.08)' },
-  ACTIVE: { color: '#3F9967', bg: 'rgba(63,153,103,0.08)' },
-  INACTIVE: { color: '#C7CCD6', bg: 'rgba(199,204,214,0.08)' },
+  LEAD: { color: '#F59E0B', bg: 'rgba(245,158,11,0.1)' },
+  ACTIVE: { color: '#10B981', bg: 'rgba(16,185,129,0.1)' },
+  INACTIVE: { color: '#9CA3AF', bg: 'rgba(156,163,175,0.1)' },
 
   // Stock movement types
-  IN: { color: '#3F9967', bg: 'rgba(63,153,103,0.08)' },
-  OUT: { color: '#C4501F', bg: 'rgba(196,80,31,0.08)' },
+  IN: { color: '#10B981', bg: 'rgba(16,185,129,0.1)' },
+  OUT: { color: '#F43F5E', bg: 'rgba(244,63,94,0.1)' },
 };
 
 // Customer type colors
 export const TYPE_COLORS = {
-  RETAIL: '#C7CCD6',
-  WHOLESALE: '#F2A93B',
-  DISTRIBUTOR: '#7CB9E8',
+  RETAIL: '#9CA3AF',
+  WHOLESALE: '#F59E0B',
+  DISTRIBUTOR: '#38BDF8',
 };
