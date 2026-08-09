@@ -1,4 +1,4 @@
-// Design tokens — FreightLedger
+// Design tokens — FundsRoom
 
 export const COLORS = {
   navy: '#F1F5F9',

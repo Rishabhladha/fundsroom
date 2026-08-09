@@ -57,7 +57,7 @@ app.use(errorHandler);
 // ── Start server ─────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {
-  console.log(`\n🚀 FreightLedger API running on http://localhost:${PORT}`);
+  console.log(`\n🚀 FundsRoom API running on http://localhost:${PORT}`);
   console.log(`   Health: http://localhost:${PORT}/api/health\n`);
 });
 

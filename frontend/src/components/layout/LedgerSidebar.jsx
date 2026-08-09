@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Package, FileText,
-  ArrowLeftRight, UserCog, LogOut, Settings, Zap,
+  ArrowLeftRight, UserCog, LogOut, Settings, TrendingUp,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import UserProfileModal from './UserProfileModal';
@@ -52,11 +52,11 @@ export default function LedgerSidebar() {
             className="w-8 h-8 rounded-lg flex items-center justify-center font-display font-bold text-sm text-white flex-shrink-0"
             style={{ background: 'var(--violet)', boxShadow: '0 2px 8px rgba(37,99,235,0.25)' }}
           >
-            <Zap size={14} strokeWidth={2.5} />
+            <TrendingUp size={16} strokeWidth={2.5} />
           </div>
           <div>
             <div className="font-display font-bold text-sm tracking-widest" style={{ color: 'var(--ink-dark)', letterSpacing: '0.08em' }}>
-              FREIGHTLEDGER
+              FUNDSROOM
             </div>
             <div className="text-[10px] font-mono" style={{ color: 'var(--ink-soft)' }}>
               Operations Portal

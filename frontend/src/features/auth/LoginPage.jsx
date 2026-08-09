@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLogin } from './useAuth';
-import { Zap, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { TrendingUp, CheckCircle2, ShieldCheck, ArrowRight, Lock, Mail } from 'lucide-react';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -20,46 +20,48 @@ export default function LoginPage() {
   const errorMsg = error?.message || (error ? 'Login failed. Check your credentials.' : null);
 
   const FEATURES = [
-    'Transactional stock control — zero overselling',
+    'Transactional stock & inventory control',
     'Dispatch challans with instant PDF export',
-    'Customer ledger & follow-up timelines',
+    'Customer ledger & statement of accounts',
     'Multi-role access: Admin, Sales, Warehouse, Accounts',
   ];
 
   const DEMO_ACCOUNTS = [
-    { email: 'admin@freightledger.com', password: 'Admin@1234', role: 'ADMIN', color: '#2563EB' },
-    { email: 'sales@freightledger.com', password: 'Sales@1234', role: 'SALES', color: '#0EA5E9' },
-    { email: 'warehouse@freightledger.com', password: 'Warehouse@1234', role: 'WAREHOUSE', color: '#D97706' },
-    { email: 'accounts@freightledger.com', password: 'Accounts@1234', role: 'ACCOUNTS', color: '#059669' },
+    { email: 'admin@fundsroom.com', password: 'Admin@1234', role: 'ADMIN', color: '#2563EB' },
+    { email: 'sales@fundsroom.com', password: 'Sales@1234', role: 'SALES', color: '#0EA5E9' },
+    { email: 'warehouse@fundsroom.com', password: 'Warehouse@1234', role: 'WAREHOUSE', color: '#D97706' },
+    { email: 'accounts@fundsroom.com', password: 'Accounts@1234', role: 'ACCOUNTS', color: '#059669' },
   ];
 
   return (
     <div
       className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden"
       style={{
-        background: 'radial-gradient(circle at 15% 20%, #E0F2FE 0%, #F1F5F9 100%)',
+        background: 'radial-gradient(circle at 10% 15%, #E0F2FE 0%, #F1F5F9 50%, #E2E8F0 100%)',
       }}
     >
-      {/* Soft decorative background glows */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full blur-3xl opacity-50 pointer-events-none" style={{ background: '#BAE6FD' }} />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full blur-3xl opacity-40 pointer-events-none" style={{ background: '#DBEAFE' }} />
+      {/* Background ambient lighting */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-40 pointer-events-none" style={{ background: '#BAE6FD' }} />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-3xl opacity-35 pointer-events-none" style={{ background: '#BFDBFE' }} />
 
+      {/* Main Container Card */}
       <div
         className="w-full max-w-4xl rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10"
         style={{
-          boxShadow: '0 12px 40px -10px rgba(37, 99, 235, 0.12), 0 0 0 1px #CBD5E1',
+          boxShadow: '0 20px 50px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px #CBD5E1',
           background: '#FFFFFF',
         }}
       >
-        {/* Left panel — light blue branding hero */}
+        {/* Left Side: Brand Panel */}
         <div
           className="lg:col-span-5 p-8 lg:p-10 flex flex-col justify-between relative overflow-hidden"
           style={{
-            background: 'linear-gradient(145deg, #F0F9FF 0%, #E0F2FE 50%, #DBEAFE 100%)',
-            borderRight: '1px solid #BFDBFE',
+            background: 'linear-gradient(150deg, #F8FAFC 0%, #F1F5F9 50%, #E0F2FE 100%)',
+            borderRight: '1px solid #CBD5E1',
           }}
         >
           <div className="relative z-10">
+            {/* Logo & Brand Header */}
             <div className="flex items-center gap-3 mb-8">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center text-white flex-shrink-0"
@@ -68,11 +70,11 @@ export default function LoginPage() {
                   boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
                 }}
               >
-                <Zap size={20} strokeWidth={2.5} />
+                <TrendingUp size={20} strokeWidth={2.5} />
               </div>
               <div>
                 <div className="font-display font-bold text-base tracking-widest uppercase" style={{ color: '#0F172A' }}>
-                  FreightLedger
+                  FUNDSROOM
                 </div>
                 <div className="text-[11px] font-mono font-medium" style={{ color: '#0284C7' }}>
                   Operations Portal v3.0
@@ -81,10 +83,10 @@ export default function LoginPage() {
             </div>
 
             <h1 className="font-display font-bold text-2xl lg:text-3xl leading-tight mb-3" style={{ color: '#0F172A', letterSpacing: '-0.03em' }}>
-              Your warehouse,<br />ledger-perfect.
+              Enterprise Operations & ERP Ledger.
             </h1>
             <p className="text-xs leading-relaxed mb-8 font-normal" style={{ color: '#334155' }}>
-              Integrated inventory management, dispatch challans, customer ledgers, and multi-role operations.
+              Streamlined inventory tracking, dispatch challans, and customer ledgers for your enterprise.
             </p>
 
             <div className="space-y-3.5">
@@ -99,7 +101,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="relative z-10 pt-6 mt-8 flex items-center justify-between text-[11px] font-mono border-t text-slate-600" style={{ borderColor: '#BFDBFE' }}>
+          <div className="relative z-10 pt-6 mt-8 flex items-center justify-between text-[11px] font-mono border-t text-slate-600" style={{ borderColor: '#CBD5E1' }}>
             <span className="font-medium" style={{ color: '#0369A1' }}>Encrypted Workspace</span>
             <span className="flex items-center gap-1.5 font-semibold" style={{ color: '#059669' }}>
               <ShieldCheck size={13} /> Production Ready
@@ -107,15 +109,15 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Right panel — login form & demo accounts */}
+        {/* Right Side: Login Form */}
         <div className="lg:col-span-7 p-8 lg:p-10 flex flex-col justify-center bg-white">
           <div className="max-w-md mx-auto w-full">
             <div className="mb-6">
               <h2 className="font-display font-bold text-2xl mb-1" style={{ color: '#0F172A', letterSpacing: '-0.02em' }}>
-                Welcome Back
+                Sign In
               </h2>
               <p className="text-xs" style={{ color: '#475569' }}>
-                Sign in with your system credentials to access the workspace.
+                Enter your FundsRoom authorized credentials to enter the workspace.
               </p>
             </div>
 
@@ -130,26 +132,34 @@ export default function LoginPage() {
                 <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#475569' }}>
                   Work Email Address
                 </label>
-                <input
-                  id="email" name="email" type="email"
-                  autoComplete="email" required
-                  value={form.email} onChange={handleChange}
-                  placeholder="name@company.com"
-                  className="field-input"
-                />
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#94A3B8' }} />
+                  <input
+                    id="email" name="email" type="email"
+                    autoComplete="email" required
+                    value={form.email} onChange={handleChange}
+                    placeholder="name@fundsroom.com"
+                    className="field-input"
+                    style={{ paddingLeft: '34px' }}
+                  />
+                </div>
               </div>
 
               <div>
                 <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#475569' }}>
                   Password
                 </label>
-                <input
-                  id="password" name="password" type="password"
-                  autoComplete="current-password" required
-                  value={form.password} onChange={handleChange}
-                  placeholder="••••••••"
-                  className="field-input"
-                />
+                <div className="relative">
+                  <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#94A3B8' }} />
+                  <input
+                    id="password" name="password" type="password"
+                    autoComplete="current-password" required
+                    value={form.password} onChange={handleChange}
+                    placeholder="••••••••"
+                    className="field-input"
+                    style={{ paddingLeft: '34px' }}
+                  />
+                </div>
               </div>
 
               <button
@@ -161,12 +171,12 @@ export default function LoginPage() {
                   boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
                 }}
               >
-                {isPending ? 'Authenticating…' : 'Sign In to Workspace'}
+                {isPending ? 'Authenticating…' : 'Sign In to FundsRoom'}
                 {!isPending && <ArrowRight size={15} />}
               </button>
             </form>
 
-            {/* Quick Demo Role Cards */}
+            {/* Quick Demo Accounts */}
             <div className="mt-7 pt-5" style={{ borderTop: '1px solid #E2E8F0' }}>
               <div className="text-[11px] font-semibold uppercase tracking-wider mb-2.5" style={{ color: '#475569' }}>
                 One-Click Quick Login (Demo Roles)

@@ -25,8 +25,8 @@ export function generateInvoicePdf(
     margin: 40,
     size: 'A4',
     info: {
-      Title: `FreightLedger — ${challan.challan_number}`,
-      Author: 'FreightLedger',
+      Title: `FundsRoom — ${challan.challan_number}`,
+      Author: 'FundsRoom',
     },
   });
 
@@ -49,7 +49,7 @@ export function generateInvoicePdf(
     .font('Helvetica-Bold')
     .fontSize(20)
     .fillColor('#FFFFFF')
-    .text('FREIGHTLEDGER', LEFT + 16, 56);
+    .text('FUNDSROOM', LEFT + 16, 56);
 
   doc
     .font('Helvetica')
@@ -258,7 +258,7 @@ export function generateInvoicePdf(
     .fontSize(7)
     .fillColor('#AAA')
     .text(
-      'This is a computer-generated document. No signature required. — FreightLedger Operations Portal',
+      'This is a computer-generated document. No signature required. — FundsRoom Operations Portal',
       LEFT, footerY + 8, { width: PAGE_W, align: 'center' }
     );
 
