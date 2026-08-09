@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useCreateChallan } from './useChallans';
 import { useCustomers } from '../customers/useCustomers';
 import { useProducts } from '../products/useProducts';
+import CustomerFormDrawer from '../customers/CustomerFormDrawer';
 import AppShell from '../../components/layout/AppShell';
 import TopBar from '../../components/layout/TopBar';
 import SearchInput from '../../components/ui/SearchInput';
-import { Plus, Trash2, Package, ArrowLeft, User } from 'lucide-react';
+import { Plus, Trash2, Package, ArrowLeft, User, UserPlus } from 'lucide-react';
 
 export default function ChallanBuilderPage() {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ export default function ChallanBuilderPage() {
   const [lineItems, setLineItems] = useState([]);
   const [taxRate, setTaxRate] = useState('');
   const [discountAmount, setDiscountAmount] = useState('');
+  const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
+  const [createdCustomer, setCreatedCustomer] = useState(null);
 
   const { data: customersData } = useCustomers({ search: customerSearch || undefined, status: 'ACTIVE', limit: 20 });
   const { data: productsData } = useProducts({ search: productSearch || undefined, limit: 20 });
@@ -25,8 +28,9 @@ export default function ChallanBuilderPage() {
   const customers = customersData?.data || [];
   const products = productsData?.data || [];
 
-  const selectedCustomer = customers.find((c) => c.id === customerId) ||
-    (customerId ? { id: customerId, name: 'Selected Customer' } : null);
+  const selectedCustomer = (createdCustomer && createdCustomer.id === customerId)
+    ? createdCustomer
+    : (customers.find((c) => c.id === customerId) || (customerId ? { id: customerId, name: 'Selected Customer' } : null));
 
   function addProduct(product) {
     setLineItems((prev) => {
@@ -101,11 +105,21 @@ export default function ChallanBuilderPage() {
 
               {/* Customer selector */}
               <div className="card p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--violet-light)' }}>
-                    <User size={12} style={{ color: 'var(--violet)' }} strokeWidth={2.5} />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--violet-light)' }}>
+                      <User size={12} style={{ color: 'var(--violet)' }} strokeWidth={2.5} />
+                    </div>
+                    <span className="font-display font-semibold text-sm" style={{ color: 'var(--ink-dark)' }}>Customer *</span>
                   </div>
-                  <span className="font-display font-semibold text-sm" style={{ color: 'var(--ink-dark)' }}>Customer *</span>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddCustomerOpen(true)}
+                    className="btn btn-ghost text-xs gap-1.5 font-semibold py-1.5 px-3 flex items-center transition-all"
+                    style={{ color: '#2563EB', border: '1px solid #BFDBFE', background: '#EFF6FF' }}
+                  >
+                    <UserPlus size={13} /> Add New Customer
+                  </button>
                 </div>
 
                 <SearchInput value={customerSearch} onChange={setCustomerSearch} placeholder="Search active customers…" />
@@ -116,23 +130,50 @@ export default function ChallanBuilderPage() {
                       <button
                         key={c.id}
                         type="button"
-                        onClick={() => { setCustomerId(c.id); setCustomerSearch(''); }}
-                        className="w-full text-left px-4 py-3 transition-colors"
+                        onClick={() => { setCustomerId(c.id); setCustomerSearch(''); setCreatedCustomer(c); }}
+                        className="w-full text-left px-4 py-3 transition-colors flex items-center justify-between"
                         style={{ borderBottom: '1px solid var(--edge)' }}
                         onMouseEnter={e => e.currentTarget.style.background = 'var(--violet-light)'}
                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                       >
-                        <div className="font-medium text-sm" style={{ color: 'var(--ink-dark)' }}>{c.name}</div>
-                        <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--ink-soft)' }}>{c.mobile} · {c.type}</div>
+                        <div>
+                          <div className="font-medium text-sm" style={{ color: 'var(--ink-dark)' }}>{c.name}</div>
+                          <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--ink-soft)' }}>{c.mobile} · {c.type}</div>
+                        </div>
+                        {c.business_name && (
+                          <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--ink-soft)' }}>
+                            {c.business_name}
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
                 )}
 
+                {customerSearch && customers.length === 0 && (
+                  <div className="mt-3 p-4 text-center rounded-xl" style={{ border: '1px border-dashed var(--edge)', background: 'var(--surface-2)' }}>
+                    <p className="text-xs mb-2.5" style={{ color: 'var(--ink-soft)' }}>
+                      No active customer matching &ldquo;{customerSearch}&rdquo; found.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddCustomerOpen(true)}
+                      className="btn btn-primary py-1.5 px-3 text-xs gap-1.5 inline-flex items-center"
+                    >
+                      <Plus size={13} /> Create &ldquo;{customerSearch}&rdquo; as New Customer
+                    </button>
+                  </div>
+                )}
+
                 {selectedCustomer && !customerSearch && (
                   <div className="mt-3 flex items-center justify-between px-3.5 py-2.5 rounded-xl" style={{ background: '#ECFDF5', border: '1px solid #A7F3D0' }}>
-                    <span className="text-sm font-semibold" style={{ color: '#059669' }}>✓ {selectedCustomer.name}</span>
-                    <button type="button" onClick={() => setCustomerId('')} className="text-xs transition-colors" style={{ color: '#6B7280' }}>Change</button>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold" style={{ color: '#059669' }}>✓ {selectedCustomer.name}</span>
+                      {selectedCustomer.mobile && (
+                        <span className="text-xs font-mono text-emerald-700">({selectedCustomer.mobile})</span>
+                      )}
+                    </div>
+                    <button type="button" onClick={() => { setCustomerId(''); setCreatedCustomer(null); }} className="text-xs font-medium transition-colors" style={{ color: '#059669' }}>Change</button>
                   </div>
                 )}
               </div>
@@ -292,6 +333,18 @@ export default function ChallanBuilderPage() {
           </div>
         </form>
       </div>
+
+      {/* Add New Customer Inline Drawer */}
+      <CustomerFormDrawer
+        isOpen={isAddCustomerOpen}
+        onClose={() => setIsAddCustomerOpen(false)}
+        initialValues={customerSearch ? { name: customerSearch } : null}
+        onCustomerCreated={(newCust) => {
+          setCustomerId(newCust.id);
+          setCreatedCustomer(newCust);
+          setCustomerSearch('');
+        }}
+      />
     </AppShell>
   );
 }

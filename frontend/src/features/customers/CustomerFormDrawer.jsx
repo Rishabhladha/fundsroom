@@ -8,7 +8,7 @@ const EMPTY = {
   follow_up_date: '',
 };
 
-export default function CustomerFormDrawer({ isOpen, onClose, customer }) {
+export default function CustomerFormDrawer({ isOpen, onClose, customer, onCustomerCreated, initialValues }) {
   const isEdit = !!customer;
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState(null);
@@ -29,11 +29,14 @@ export default function CustomerFormDrawer({ isOpen, onClose, customer }) {
           follow_up_date: customer.follow_up_date ? customer.follow_up_date.split('T')[0] : '',
         });
       } else {
-        setForm(EMPTY);
+        setForm({
+          ...EMPTY,
+          ...(initialValues || {}),
+        });
       }
       setError(null);
     }
-  }, [isOpen, customer]);
+  }, [isOpen, customer, initialValues]);
 
   const { mutate: create, isPending: creating } = useCreateCustomer();
   const { mutate: update, isPending: updating } = useUpdateCustomer(customer?.id);
@@ -57,16 +60,26 @@ export default function CustomerFormDrawer({ isOpen, onClose, customer }) {
       follow_up_date: form.follow_up_date || undefined,
     };
 
-    const onSuccess = () => {
-      onClose();
-      setForm(EMPTY);
-    };
     const onError = (err) => setError(err.message || 'Failed to save customer');
 
     if (isEdit) {
-      update(payload, { onSuccess, onError });
+      update(payload, {
+        onSuccess: (res) => {
+          if (onCustomerCreated && res?.data) onCustomerCreated(res.data);
+          onClose();
+          setForm(EMPTY);
+        },
+        onError,
+      });
     } else {
-      create(payload, { onSuccess, onError });
+      create(payload, {
+        onSuccess: (res) => {
+          if (onCustomerCreated && res?.data) onCustomerCreated(res.data);
+          onClose();
+          setForm(EMPTY);
+        },
+        onError,
+      });
     }
   }
 
