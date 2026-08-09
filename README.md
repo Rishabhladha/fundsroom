@@ -1,128 +1,182 @@
-# FreightLedger
+# FundsRoom — Mini ERP & CRM Operations Portal
 
-> Mini ERP + CRM Operations Portal — warehouse manifest aesthetic, production-grade business logic.
-
----
-
-## Stack
-
-| | Technology |
-|---|---|
-| **Backend** | Node.js · Express · TypeScript · PostgreSQL (Supabase) · node-postgres · JWT · bcryptjs · pdfkit |
-| **Frontend** | React 18 (JS) · Vite · TanStack Query · Zustand · Tailwind CSS · React Router v6 |
+> Production-grade Operations, Inventory, Challan, and Ledger Portal built with React, Express TypeScript, PostgreSQL, AWS S3, Docker, and Nginx.
 
 ---
 
-## Quick Start
+## 🔗 Live Application & Links
 
-### 1. Prerequisites
+* **GitHub Repository**: [https://github.com/Rishabhladha/fundsroom](https://github.com/Rishabhladha/fundsroom)
+* **Live Frontend URL**: [http://52.64.29.191](http://52.64.29.191)
+* **Live Backend API URL**: [http://52.64.29.191/api](http://52.64.29.191/api)
 
-- Node.js 18+
-- A free [Supabase](https://supabase.com) project
+---
 
-### 2. Database Setup
+## 🔐 Test Login Credentials
 
-1. Go to your Supabase project → **SQL Editor**
-2. Run `backend/sql/schema.sql` (creates all tables and ENUMs)
-3. Run `backend/sql/seed.sql` (inserts demo data)
+| Role | Email | Password | Allowed Access |
+|---|---|---|---|
+| **ADMIN** | `admin@fundsroom.com` | `Admin@1234` | Full system access, Team management, All features |
+| **SALES** | `sales@fundsroom.com` | `Sales@1234` | Customers, Products, Challan creation |
+| **WAREHOUSE** | `warehouse@fundsroom.com` | `Warehouse@1234` | Products, Stock Logs, Challan confirmation |
+| **ACCOUNTS** | `accounts@fundsroom.com` | `Accounts@1234` | Payments, Invoices, Account Statements, Ledger |
 
-### 3. Backend
+---
+
+## 🏗️ Architecture Overview
+
+The system uses a decoupled, microservices-style containerized architecture:
+
+```
+                  ┌──────────────────────────────────────────────┐
+                  │                 User Browser                 │
+                  └──────────────────────┬───────────────────────┘
+                                         │ Port 80
+                                         ▼
+                  ┌──────────────────────────────────────────────┐
+                  │          Nginx Reverse Proxy & SPA           │
+                  │             (frontend container)             │
+                  └──────────────┬────────────────┬──────────────┘
+                                 │                │
+           Static Files (React)  │                │ /api/* Requests
+                                 ▼                ▼
+                  ┌────────────────────┐   ┌─────────────────────┐
+                  │    React 18 SPA    │   │ Express TypeScript  │
+                  │   (Vite Build)     │   │ (backend container) │
+                  └────────────────────┘   └──────────┬──────────┘
+                                                      │
+                                   ┌──────────────────┴──────────────────┐
+                                   ▼                                     ▼
+                     ┌──────────────────────────┐           ┌──────────────────────────┐
+                     │ PostgreSQL DB (Supabase) │           │ AWS S3 Bucket (Avatars)  │
+                     └──────────────────────────┘           └──────────────────────────┘
+```
+
+* **Multi-Stage Docker Builds**: Production images use Node 20 Alpine and Nginx Alpine for minimal size and high performance.
+* **Nginx Web Server**: Serves built React static assets, resolves SPA client-side routes (`try_files $uri /index.html`), and reverse-proxies `/api` requests to avoid CORS restrictions.
+* **AWS S3 Object Storage**: Profile photos are uploaded directly to AWS S3 (`fundsroom-avatars-app`) with a Base64 fallback for local offline development.
+* **Database Optimization**: Uses `pg.Pool` connection pooling with startup pre-warming and `ipv4first` DNS resolution for sub-10ms query execution.
+
+---
+
+## 🛠️ Setup & Deployment Instructions
+
+### Prerequisites
+* Node.js v20+ and npm v10+
+* Docker & Docker Compose v2+
+* Git
+
+---
+
+### 1. Local Development (Without Docker)
 
 ```bash
-cd freightledger/backend
-cp ../.env.example .env          # fill in DATABASE_URL and JWT_SECRET
-npm install
-npm run dev                       # starts on http://localhost:5000
-```
+# Clone the repository
+git clone https://github.com/Rishabhladha/fundsroom.git
+cd fundsroom
 
-### 4. Frontend
+# 1. Install & start backend
+cd backend
+npm install
+cp .env.example .env   # Configure your Supabase DATABASE_URL & JWT_SECRET
+npm run dev
+
+# 2. Install & start frontend (in a second terminal window)
+cd ../frontend
+npm install
+npm run dev
+```
+* **Frontend**: `http://localhost:5173`
+* **Backend**: `http://localhost:5000`
+
+---
+
+### 2. Running Locally with Docker Compose
 
 ```bash
-cd freightledger/frontend
-cp .env.example .env              # VITE_API_URL=http://localhost:5000
-npm install
-npm run dev                       # starts on http://localhost:5173
+# In project root directory
+docker compose up --build -d
 ```
+* **Access App**: `http://localhost`
 
 ---
 
-## Demo Users (from seed.sql)
+### 3. AWS EC2 Cloud Deployment
 
-| Role | Email | Password |
-|---|---|---|
-| ADMIN | admin@freightledger.com | `Admin@1234` |
-| SALES | sales@freightledger.com | `Sales@1234` |
-| WAREHOUSE | warehouse@freightledger.com | `Warehouse@1234` |
-| ACCOUNTS | accounts@freightledger.com | `Accounts@1234` |
-
----
-
-## Role Permissions
-
-| Action | ADMIN | SALES | WAREHOUSE | ACCOUNTS |
-|---|---|---|---|---|
-| Manage Users | ✅ | ❌ | ❌ | ❌ |
-| Customers (CRUD) | ✅ | ✅ | ❌ | 👁 Read |
-| Follow-ups | ✅ | ✅ | ❌ | 👁 Read |
-| Products (CRUD) | ✅ | 👁 Read | ✅ | 👁 Read |
-| Stock Adjustments | ✅ | ❌ | ✅ | ❌ |
-| Challans (CRUD) | ✅ | ✅ | 👁 Read | 👁 Read |
-| Confirm/Cancel Challan | ✅ | ✅ | ❌ | ❌ |
-| Invoice PDF Export | ✅ | ✅ (own) | ❌ | ✅ |
+1. **Launch EC2 Instance**: Spin up an Ubuntu 22.04 / 24.04 LTS instance (`t3.micro` or `t3.small`). Open ports `22`, `80`, and `443` in Security Group.
+2. **Install Docker on EC2**:
+   ```bash
+   sudo apt update && sudo apt install -y docker.io docker-compose-v2 git
+   sudo usermod -aG docker ubuntu && newgrp docker
+   ```
+3. **Clone & Configure Environment**:
+   ```bash
+   git clone https://github.com/Rishabhladha/fundsroom.git
+   cd fundsroom
+   nano .env   # Add DATABASE_URL, JWT_SECRET, AWS S3 keys
+   ```
+4. **Build & Run Containers**:
+   ```bash
+   docker compose up --build -d
+   ```
+5. **Static IP Assignment**: Allocate and associate an AWS Elastic IP to reserve a permanent IP address.
 
 ---
 
-## Key Business Rules
+## 📖 API Documentation
 
-1. **Stock never goes negative** — enforced inside a Postgres transaction with `SELECT ... FOR UPDATE` row locks, not just in the frontend
-2. **Challans store snapshots** — product name and price at time of sale are copied to `challan_items`; editing the product later does not change existing challans
-3. **Every stock change has a movement row** — `stock_movements` always reconstructs the current `products.stock`
-4. **Confirm is idempotent** — confirming an already-confirmed challan returns 400, not a double-deduction
-5. **Cancelling restocks** — cancelling a CONFIRMED challan creates IN movements for all line items
+Base Endpoint: `http://52.64.29.191/api/v1`
 
----
-
-## API Base URL
-
-`http://localhost:5000/api`
-
-Health check: `GET /api/health`
+### 🔑 Authentication & Profile
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `POST` | `/auth/login` | Public | Login with email & password |
+| `GET` | `/auth/me` | Authenticated | Get current logged-in user profile |
+| `PATCH` | `/auth/profile` | Authenticated | Update display name or password |
+| `POST` | `/auth/profile/avatar` | Authenticated | Upload profile picture to AWS S3 (`multipart/form-data`) |
+| `GET` | `/auth/users` | Admin | List all team accounts |
+| `POST` | `/auth/users` | Admin | Create a new user account |
 
 ---
 
-## Folder Structure
+### 👥 Customers Management
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/customers` | Authenticated | List customers with search, filter, and pagination |
+| `POST` | `/customers` | Admin/Sales | Add a new customer |
+| `GET` | `/customers/:id` | Authenticated | Get customer details and transaction ledger |
+| `PATCH` | `/customers/:id` | Admin/Sales | Update customer record |
 
-```
-freightledger/
-├── .env.example
-├── .gitignore
-├── README.md
-├── backend/
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── sql/
-│   │   ├── schema.sql
-│   │   └── seed.sql
-│   └── src/
-│       ├── server.ts
-│       ├── db.ts
-│       ├── types/index.ts
-│       ├── middleware/
-│       ├── utils/
-│       ├── auth/
-│       ├── customers/
-│       ├── products/
-│       └── challans/
-└── frontend/
-    ├── package.json
-    ├── vite.config.js
-    ├── tailwind.config.js
-    └── src/
-        ├── main.jsx
-        ├── App.jsx
-        ├── theme/tokens.js
-        ├── lib/
-        ├── store/
-        ├── features/
-        └── components/
-```
+---
+
+### 📦 Products & Inventory
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/products` | Authenticated | List inventory items with stock levels |
+| `POST` | `/products` | Admin/Warehouse | Add new product item |
+| `PATCH` | `/products/:id` | Admin/Warehouse | Update price, SKU, or minimum stock alert |
+
+---
+
+### 📜 Delivery Challans & Invoices
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/challans` | Authenticated | List delivery challans |
+| `POST` | `/challans` | Admin/Sales | Draft new delivery challan |
+| `POST` | `/challans/:id/confirm` | Admin/Warehouse | Confirm challan (deducts inventory & posts to ledger) |
+| `GET` | `/challans/:id/pdf` | Authenticated | Download PDF Invoice |
+
+---
+
+### 💳 Payments & Account Statements
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/payments` | Authenticated | List received customer payments |
+| `POST` | `/payments` | Admin/Accounts | Record customer payment |
+
+---
+
+## ⚠️ Known Limitations & Incomplete Parts
+
+1. **HTTP / SSL Certificate**: The live AWS deployment operates over standard HTTP on port 80. For production domains, an SSL certificate via Certbot (Let's Encrypt) or AWS CloudFront should be attached for HTTPS.
+2. **Role-Based Access Control (RBAC)**: Backend endpoints strictly validate user roles (Admin, Sales, Warehouse, Accounts). On the frontend, route protection hides nav links per role, but finer granular button disables are controlled server-side.

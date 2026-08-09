@@ -12,7 +12,7 @@ dns.setDefaultResultOrder('ipv4first');
 // Single Pool instance shared across the entire app.
 // PG picks up DATABASE_URL from the environment automatically.
 // ─────────────────────────────────────────────────────────────────────────────
-
+ 
 if (!process.env.DATABASE_URL) {
   console.error('❌  DATABASE_URL is not set. Check your .env file.');
   process.exit(1);

@@ -16,7 +16,7 @@ const s3Client = (accessKeyId && secretAccessKey)
       },
     })
   : null;
-
+ 
 /**
  * Uploads an image buffer to AWS S3 (or generates a base64 fallback if S3 keys are not configured).
  * @param buffer - File buffer from Multer
