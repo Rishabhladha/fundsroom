@@ -7,7 +7,8 @@
 ## 🔗 Live Application & Links
 
 * **GitHub Repository**: [https://github.com/Rishabhladha/fundsroom](https://github.com/Rishabhladha/fundsroom)
-* **Live Application URL**: [http://3.105.245.197](http://3.105.245.197)
+* **Live Frontend URL**: [http://3.105.245.197](http://3.105.245.197)
+* **Live Backend API URL**: [http://3.105.245.197/api](http://3.105.245.197/api)
 
 ---
 
