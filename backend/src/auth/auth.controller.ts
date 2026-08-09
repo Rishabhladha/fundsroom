@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { query } from '../db';
 import { AppError, User, Role } from '../types';
 import { requireFields, isValidEmail, isValidEnum } from '../utils/pagination';
+import { uploadImageToS3 } from '../services/s3.service';
 
 const ROLES: Role[] = ['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS'];
 
@@ -75,7 +76,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     ).catch(() => {});
 
     const result = await query<User>(
-      `SELECT id, name, email, password_hash, role, is_active
+      `SELECT id, name, email, password_hash, role, is_active, avatar_url
        FROM users WHERE LOWER(email) = $1 OR LOWER(email) = $2`,
       [searchEmail, altEmail]
     );
@@ -113,6 +114,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
         email: user.email,
         role: user.role,
         is_active: user.is_active,
+        avatar_url: user.avatar_url,
       },
     });
   } catch (err) {
@@ -130,7 +132,7 @@ export async function getMe(req: Request, res: Response, next: NextFunction): Pr
     if (!req.user) throw new AppError(401, 'Not authenticated', 'Unauthorized');
 
     const result = await query<Omit<User, 'password_hash'>>(
-      `SELECT id, name, email, role, is_active, created_at
+      `SELECT id, name, email, role, is_active, avatar_url, created_at
        FROM users WHERE id = $1`,
       [req.user.id]
     );
@@ -182,11 +184,53 @@ export async function updateProfile(req: Request, res: Response, next: NextFunct
       `UPDATE users
        SET name = $1, password_hash = $2
        WHERE id = $3
-       RETURNING id, name, email, role, is_active, created_at`,
+       RETURNING id, name, email, role, is_active, avatar_url, created_at`,
       [updatedName, updatedHash, req.user.id]
     );
 
     res.json({ message: 'Profile updated successfully', data: result.rows[0] });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/auth/profile/avatar
+// Uploads profile picture to AWS S3 and saves avatar_url in DB
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function uploadAvatar(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    if (!req.user) throw new AppError(401, 'Not authenticated', 'Unauthorized');
+    if (!req.file) throw new AppError(400, 'No image file uploaded', 'ValidationError');
+
+    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedMimeTypes.includes(req.file.mimetype)) {
+      throw new AppError(400, 'Only JPEG, PNG, WEBP, or GIF images are allowed', 'ValidationError');
+    }
+
+    // Upload image to AWS S3
+    const avatarUrl = await uploadImageToS3(
+      req.file.buffer,
+      req.file.originalname,
+      req.file.mimetype,
+      req.user.id
+    );
+
+    // Save avatar_url to PostgreSQL
+    const result = await query<User>(
+      `UPDATE users
+       SET avatar_url = $1
+       WHERE id = $2
+       RETURNING id, name, email, role, is_active, avatar_url, created_at`,
+      [avatarUrl, req.user.id]
+    );
+
+    res.json({
+      message: 'Avatar uploaded successfully',
+      data: result.rows[0],
+      avatar_url: avatarUrl,
+    });
   } catch (err) {
     next(err);
   }
@@ -200,7 +244,7 @@ export async function updateProfile(req: Request, res: Response, next: NextFunct
 export async function getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const result = await query<Omit<User, 'password_hash'>>(
-      `SELECT id, name, email, role, is_active, created_at
+      `SELECT id, name, email, role, is_active, avatar_url, created_at
        FROM users
        ORDER BY created_at DESC`
     );
@@ -236,7 +280,7 @@ export async function toggleUserStatus(req: Request, res: Response, next: NextFu
       `UPDATE users
        SET is_active = $1, role = $2
        WHERE id = $3
-       RETURNING id, name, email, role, is_active, created_at`,
+       RETURNING id, name, email, role, is_active, avatar_url, created_at`,
       [newActive, newRole, id]
     );
 
@@ -245,4 +289,5 @@ export async function toggleUserStatus(req: Request, res: Response, next: NextFu
     next(err);
   }
 }
+
 

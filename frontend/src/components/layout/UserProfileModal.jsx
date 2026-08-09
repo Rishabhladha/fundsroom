@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { api } from '../../lib/api';
-import { X, User, KeyRound, ShieldCheck, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { X, User, KeyRound, ShieldCheck, CheckCircle, AlertCircle, Eye, EyeOff, Camera, Loader2 } from 'lucide-react';
 
 export default function UserProfileModal({ isOpen, onClose }) {
   const { user, updateUser } = useAuthStore();
@@ -13,6 +13,7 @@ export default function UserProfileModal({ isOpen, onClose }) {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -23,6 +24,35 @@ export default function UserProfileModal({ isOpen, onClose }) {
       setSuccess(null);
     }
   }, [isOpen, user]);
+
+  async function handleAvatarUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image file (PNG, JPEG, WEBP)');
+      return;
+    }
+
+    setError(null);
+    setSuccess(null);
+    setUploadingAvatar(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      const res = await api.post('/auth/profile/avatar', formData);
+
+      const updatedAvatarUrl = res.avatar_url || res.data?.avatar_url;
+      updateUser({ avatar_url: updatedAvatarUrl });
+      setSuccess('Profile picture uploaded successfully!');
+    } catch (err) {
+      setError(err.message || 'Failed to upload profile picture');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
 
   // Close on Escape
   useEffect(() => {
@@ -94,7 +124,7 @@ export default function UserProfileModal({ isOpen, onClose }) {
                 Account Settings
               </div>
               <div className="text-xs mt-0.5" style={{ color: 'var(--ink-soft)' }}>
-                Manage your profile and security
+                Manage your profile, avatar, and security
               </div>
             </div>
             <button
@@ -110,16 +140,53 @@ export default function UserProfileModal({ isOpen, onClose }) {
 
           {/* Avatar strip */}
           <div className="flex items-center gap-4 px-6 py-5" style={{ borderBottom: '1px solid var(--edge)', background: '#FFFFFF' }}>
-            <div
-              className="w-14 h-14 rounded-2xl flex items-center justify-center font-display font-bold text-xl text-white flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', boxShadow: '0 4px 12px rgba(37,99,235,0.3)' }}
-            >
-              {initials}
+            <div className="relative group flex-shrink-0 cursor-pointer" onClick={() => document.getElementById('s3-avatar-input')?.click()}>
+              {user?.avatar_url ? (
+                <img
+                  src={user.avatar_url}
+                  alt={user?.name}
+                  className="w-14 h-14 rounded-2xl object-cover"
+                  style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '1px solid var(--edge)' }}
+                />
+              ) : (
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center font-display font-bold text-xl text-white"
+                  style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', boxShadow: '0 4px 12px rgba(37,99,235,0.3)' }}
+                >
+                  {initials}
+                </div>
+              )}
+
+              {/* Upload overlay */}
+              <label
+                htmlFor="s3-avatar-input"
+                className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-opacity bg-black/60 opacity-0 group-hover:opacity-100 text-white"
+                title="Upload profile picture to AWS S3"
+                onClick={e => e.stopPropagation()}
+              >
+                {uploadingAvatar ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <>
+                    <Camera size={16} />
+                    <span className="text-[9px] font-medium mt-0.5">S3 Upload</span>
+                  </>
+                )}
+              </label>
+              <input
+                id="s3-avatar-input"
+                type="file"
+                accept="image/png, image/jpeg, image/webp, image/gif"
+                className="hidden"
+                onChange={handleAvatarUpload}
+                disabled={uploadingAvatar}
+              />
             </div>
+
             <div>
               <div className="font-display font-bold text-base" style={{ color: 'var(--ink-dark)' }}>{user?.name}</div>
               <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--ink-soft)' }}>{user?.email}</div>
-              <div className="flex items-center gap-1.5 mt-2">
+              <div className="flex items-center gap-2 mt-2">
                 <ShieldCheck size={11} style={{ color: roleStyle.color }} />
                 <span
                   className="font-mono text-[11px] font-bold px-2 py-0.5 rounded-full"
@@ -127,6 +194,9 @@ export default function UserProfileModal({ isOpen, onClose }) {
                 >
                   {user?.role}
                 </span>
+                <label htmlFor="s3-avatar-input" className="text-[11px] text-blue-600 font-semibold hover:underline cursor-pointer flex items-center gap-1">
+                  <Camera size={11} /> Upload Photo
+                </label>
               </div>
             </div>
           </div>

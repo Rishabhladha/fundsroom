@@ -98,12 +98,21 @@ export default function LedgerSidebar() {
               onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             >
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center font-display font-bold text-xs text-white flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)' }}
-              >
-                {initials}
-              </div>
+              {user.avatar_url ? (
+                <img
+                  src={user.avatar_url}
+                  alt={user.name}
+                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                  style={{ border: '1px solid var(--edge)' }}
+                />
+              ) : (
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center font-display font-bold text-xs text-white flex-shrink-0"
+                  style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)' }}
+                >
+                  {initials}
+                </div>
+              )}
               <div className="min-w-0 flex-1">
                 <div className="text-xs font-semibold truncate" style={{ color: 'var(--ink-dark)' }}>{user.name}</div>
                 <div className="text-[10px] font-mono truncate" style={{ color: 'var(--ink-soft)' }}>{user.role}</div>

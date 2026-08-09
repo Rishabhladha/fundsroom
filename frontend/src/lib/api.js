@@ -16,17 +16,23 @@ function getToken() {
 
 async function request(method, path, body = null, options = {}) {
   const token = getToken();
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
 
   const headers = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...options.headers,
   };
 
+  // If options.headers passed Content-Type explicitly for FormData, remove it to allow fetch to set boundary
+  if (isFormData) {
+    delete headers['Content-Type'];
+  }
+
   const config = {
     method,
     headers,
-    ...(body !== null ? { body: JSON.stringify(body) } : {}),
+    ...(body !== null ? { body: isFormData ? body : JSON.stringify(body) } : {}),
   };
 
   const res = await fetch(`${BASE_URL}${path}`, config);

@@ -31,12 +31,18 @@ pool.on('error', (err) => {
   console.error('Unexpected Postgres pool error:', err);
 });
 
-// Pre-warm initial DB connection asynchronously on server startup
-pool.query('SELECT 1').then(() => {
-  console.log('⚡ Database connection pool initialized & pre-warmed.');
-}).catch((err) => {
-  console.warn('⚠️ Initial database pre-warm failed (will retry on demand):', err.message);
-});
+// Pre-warm initial DB connection asynchronously on server startup and ensure avatar_url column
+pool.query('SELECT 1')
+  .then(() => {
+    console.log('⚡ Database connection pool initialized & pre-warmed.');
+    return pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT;');
+  })
+  .then(() => {
+    console.log('✅ Users table schema verified (avatar_url column ready).');
+  })
+  .catch((err) => {
+    console.warn('⚠️ Initial database pre-warm failed (will retry on demand):', err.message);
+  });
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Query helper — use for all single-query operations (no transaction needed)

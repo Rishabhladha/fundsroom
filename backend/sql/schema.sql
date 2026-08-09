@@ -21,6 +21,7 @@ CREATE TABLE users (
   password_hash TEXT        NOT NULL,
   role          role        NOT NULL,
   is_active     BOOLEAN     NOT NULL DEFAULT true,
+  avatar_url    TEXT,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
