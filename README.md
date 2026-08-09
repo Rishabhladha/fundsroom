@@ -7,8 +7,8 @@
 ## 🔗 Live Application & Links
 
 * **GitHub Repository**: [https://github.com/Rishabhladha/fundsroom](https://github.com/Rishabhladha/fundsroom)
-* **Live Frontend URL**: [http://52.64.29.191](http://52.64.29.191)
-* **Live Backend API URL**: [http://52.64.29.191/api](http://52.64.29.191/api)
+* **Live Frontend URL**: [http://3.105.245.197](http://3.105.245.197)
+* **Live Backend API URL**: [http://3.105.245.197/api](http://3.105.245.197/api)
 
 ---
 
@@ -125,7 +125,7 @@ docker compose up --build -d
 
 ## 📖 API Documentation
 
-Base Endpoint: `http://52.64.29.191/api/v1`
+Base Endpoint: `http://3.105.245.197/api/v1`
 
 ### 🔑 Authentication & Profile
 | Method | Endpoint | Access | Description |
