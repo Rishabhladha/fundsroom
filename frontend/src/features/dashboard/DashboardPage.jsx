@@ -42,10 +42,10 @@ export default function DashboardPage() {
 
         {/* Stat cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard icon={Users}      label="Customers"  value={totalCustomers} accent="#6C63FF" onClick={() => navigate('/customers')} />
-          <StatCard icon={Package}    label="Products"   value={totalProducts}  accent="#0EA5E9" onClick={() => navigate('/products')} />
-          <StatCard icon={FileText}   label="Challans"   value={totalChallans}  accent="#10B981" onClick={() => navigate('/challans')} />
-          <StatCard icon={TrendingUp} label="Confirmed"  value={totalConfirmed} accent="#F59E0B" onClick={() => navigate('/challans?status=CONFIRMED')} />
+          <StatCard icon={Users}      label="Customers"           value={totalCustomers} accent="#6C63FF" onClick={() => navigate('/customers')} />
+          <StatCard icon={Package}    label="Products"            value={totalProducts}  accent="#0EA5E9" onClick={() => navigate('/products')} />
+          <StatCard icon={FileText}   label="Total Dispatches"    value={totalChallans}  accent="#10B981" onClick={() => navigate('/challans')} />
+          <StatCard icon={TrendingUp} label="Confirmed Shipments" value={totalConfirmed} accent="#F59E0B" onClick={() => navigate('/challans?status=CONFIRMED')} />
         </div>
 
         {/* Low stock alert */}

@@ -7,7 +7,7 @@ import TopBar from '../../components/layout/TopBar';
 import Pagination from '../../components/ui/Pagination';
 import Drawer from '../../components/ui/Drawer';
 import SearchInput from '../../components/ui/SearchInput';
-import { TrendingUp, TrendingDown, PlusCircle, FilterX } from 'lucide-react';
+import { TrendingUp, TrendingDown, PlusCircle, FilterX, Search, Info } from 'lucide-react';
 
 export default function StockLogPage() {
   const { user } = useAuthStore();
@@ -88,13 +88,18 @@ export default function StockLogPage() {
         <div className="card flex items-center gap-3 p-3 mb-4 flex-wrap">
           <SearchInput placeholder="Search product name or SKU…" value={search} onChange={setSearch} />
           {filterProductId && (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: 'var(--violet-light)', color: 'var(--violet)', border: '1px solid #C7D2FE' }}>
-              <span>Filtering: {filterProductName}</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: 'var(--violet-light)', color: 'var(--violet)', border: '1px solid #BFDBFE' }}>
+              <span>Filtered by: {filterProductName}</span>
               <button onClick={clearFilter} className="hover:opacity-70 transition-opacity">
                 <FilterX size={12} />
               </button>
             </div>
           )}
+
+          <div className="ml-auto text-xs flex items-center gap-1.5 font-medium" style={{ color: 'var(--ink-soft)' }}>
+            <Info size={13} style={{ color: 'var(--violet)' }} />
+            <span>Tip: Click any product name in the table to isolate its history</span>
+          </div>
         </div>
 
         {/* Table */}
@@ -113,11 +118,11 @@ export default function StockLogPage() {
                 <tr>
                   <th>Date</th>
                   <th>SKU</th>
-                  <th>Product</th>
+                  <th>Product (Click to Filter)</th>
                   <th>Direction</th>
                   <th className="text-right">Qty</th>
-                  <th>Reason</th>
-                  <th>By</th>
+                  <th>Reason / Ref</th>
+                  <th>Recorded By</th>
                 </tr>
               </thead>
               <tbody>
@@ -133,14 +138,15 @@ export default function StockLogPage() {
                     </td>
                     <td>
                       <button
-                        className="text-sm font-medium text-left transition-colors"
+                        className="group relative inline-flex items-center gap-1.5 text-sm font-semibold text-left px-2 py-1 rounded-lg transition-all"
                         style={{ color: 'var(--ink-dark)' }}
                         onClick={() => { setFilterProductId(mv.product_id); setFilterProductName(mv.product_name); }}
-                        onMouseEnter={e => e.currentTarget.style.color = 'var(--violet)'}
-                        onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-dark)'}
-                        title="Click to filter by this product"
+                        onMouseEnter={e => { e.currentTarget.style.background = 'var(--violet-light)'; e.currentTarget.style.color = 'var(--violet)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ink-dark)'; }}
+                        title="Click to view history for this product"
                       >
-                        {mv.product_name}
+                        <span>{mv.product_name}</span>
+                        <Search size={11} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--violet)' }} />
                       </button>
                     </td>
                     <td>
@@ -148,20 +154,20 @@ export default function StockLogPage() {
                         className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full"
                         style={mv.type === 'IN'
                           ? { background: '#ECFDF5', color: '#059669', border: '1px solid #A7F3D0' }
-                          : { background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA' }
+                          : { background: '#FEF2F2', color: '#EF4444', border: '1px solid #FECACA' }
                         }
                       >
                         {mv.type === 'IN' ? <TrendingUp size={10} strokeWidth={2.5} /> : <TrendingDown size={10} strokeWidth={2.5} />}
                         {mv.type}
                       </span>
                     </td>
-                    <td className="text-right font-mono font-bold text-sm" style={{ color: mv.type === 'IN' ? '#059669' : '#DC2626' }}>
+                    <td className="text-right font-mono font-bold text-sm" style={{ color: mv.type === 'IN' ? '#059669' : '#EF4444' }}>
                       {mv.type === 'IN' ? '+' : '-'}{mv.quantity}
                     </td>
                     <td className="text-sm max-w-xs truncate" style={{ color: 'var(--ink-soft)' }} title={mv.reason}>
                       {mv.reason}
                     </td>
-                    <td className="text-xs" style={{ color: 'var(--ink-soft)' }}>{mv.created_by_name}</td>
+                    <td className="text-xs font-medium" style={{ color: 'var(--ink-soft)' }}>{mv.created_by_name}</td>
                   </tr>
                 ))}
               </tbody>

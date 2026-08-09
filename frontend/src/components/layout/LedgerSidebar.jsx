@@ -40,25 +40,25 @@ export default function LedgerSidebar() {
           width: '228px',
           minWidth: '228px',
           background: 'var(--navy)',
-          borderRight: '1px solid var(--navy-border)',
+          borderRight: '1px solid var(--edge)',
         }}
       >
         {/* Logo */}
         <div
           className="flex items-center gap-3 px-5 py-5"
-          style={{ borderBottom: '1px solid var(--navy-border)' }}
+          style={{ borderBottom: '1px solid var(--edge)' }}
         >
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center font-display font-bold text-sm text-white flex-shrink-0"
-            style={{ background: 'var(--violet)', boxShadow: '0 0 0 4px rgba(108,99,255,0.2)' }}
+            style={{ background: 'var(--violet)', boxShadow: '0 2px 8px rgba(37,99,235,0.25)' }}
           >
             <Zap size={14} strokeWidth={2.5} />
           </div>
           <div>
-            <div className="font-display font-bold text-sm tracking-widest text-white" style={{ letterSpacing: '0.1em' }}>
+            <div className="font-display font-bold text-sm tracking-widest" style={{ color: 'var(--ink-dark)', letterSpacing: '0.08em' }}>
               FREIGHTLEDGER
             </div>
-            <div className="text-[10px] font-mono" style={{ color: '#4A6A8A' }}>
+            <div className="text-[10px] font-mono" style={{ color: 'var(--ink-soft)' }}>
               Operations Portal
             </div>
           </div>
@@ -66,13 +66,13 @@ export default function LedgerSidebar() {
 
         {/* Nav section label */}
         <div className="px-5 pt-5 pb-2">
-          <span className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: '#2C4A6A' }}>
+          <span className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: 'var(--ink-muted)' }}>
             Workspace
           </span>
         </div>
 
         {/* Nav items */}
-        <nav className="flex-1">
+        <nav className="flex-1 space-y-0.5">
           {visibleItems.map(({ to, icon: Icon, label }) => {
             const isActive = location.pathname.startsWith(to);
             return (
@@ -89,36 +89,35 @@ export default function LedgerSidebar() {
         </nav>
 
         {/* User profile */}
-        <div style={{ borderTop: '1px solid var(--navy-border)' }} className="p-3">
+        <div style={{ borderTop: '1px solid var(--edge)' }} className="p-3">
           {user && (
             <button
               type="button"
               onClick={() => setProfileOpen(true)}
               className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition-colors group"
-              style={{ ':hover': { background: 'rgba(255,255,255,0.05)' } }}
-              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+              onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             >
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center font-display font-bold text-xs text-white flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #6C63FF, #4F46E5)' }}
+                style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)' }}
               >
                 {initials}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-semibold text-white truncate">{user.name}</div>
-                <div className="text-[10px] font-mono truncate" style={{ color: '#4A6A8A' }}>{user.role}</div>
+                <div className="text-xs font-semibold truncate" style={{ color: 'var(--ink-dark)' }}>{user.name}</div>
+                <div className="text-[10px] font-mono truncate" style={{ color: 'var(--ink-soft)' }}>{user.role}</div>
               </div>
-              <Settings size={12} style={{ color: '#2C4A6A' }} />
+              <Settings size={12} style={{ color: 'var(--ink-soft)' }} />
             </button>
           )}
 
           <button
             onClick={logout}
             className="w-full flex items-center gap-2.5 px-3 py-2 mt-1 rounded-lg text-xs transition-colors"
-            style={{ color: '#4A6A8A' }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#4A6A8A'; e.currentTarget.style.background = 'transparent'; }}
+            style={{ color: 'var(--ink-soft)' }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = '#FEF2F2'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--ink-soft)'; e.currentTarget.style.background = 'transparent'; }}
           >
             <LogOut size={13} />
             <span>Sign out</span>

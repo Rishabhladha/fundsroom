@@ -33,19 +33,16 @@ export default function FollowUpTimeline({ customerId, canAdd }) {
   }
 
   return (
-    <div
-      className="rounded-lg border border-steel bg-ink-raised"
-    >
-      {/* Header */}
-      <div
-        className="flex items-center justify-between px-5 py-4 border-b border-steel"
-      >
-        <h3 className="font-display font-semibold text-sm text-white flex items-center gap-2">
-          <MessageSquarePlus size={15} className="text-signal-amber" />
-          Follow-up History
+    <div className="space-y-4">
+      {/* Header & counter */}
+      <div className="flex items-center justify-between pb-3" style={{ borderBottom: '1px solid var(--edge)' }}>
+        <h3 className="font-display font-semibold text-sm flex items-center gap-2" style={{ color: 'var(--ink-dark)' }}>
+          <MessageSquarePlus size={16} style={{ color: 'var(--violet)' }} />
+          Follow-up Log
           {followUps.length > 0 && (
             <span
-              className="font-mono text-xs px-1.5 py-0.5 rounded bg-steel text-slate-text"
+              className="font-mono text-xs px-2 py-0.5 rounded-full font-semibold"
+              style={{ background: 'var(--violet-light)', color: 'var(--violet)' }}
             >
               {followUps.length}
             </span>
@@ -55,50 +52,52 @@ export default function FollowUpTimeline({ customerId, canAdd }) {
 
       {/* Add note form */}
       {canAdd && (
-        <form onSubmit={handleAdd} className="px-5 py-4 border-b border-steel">
+        <form onSubmit={handleAdd} className="p-3.5 rounded-xl space-y-2.5" style={{ background: 'var(--surface-2)', border: '1px solid var(--edge)' }}>
           {error && (
-            <div className="mb-2 text-xs px-3 py-2 rounded bg-rust-alert/10 text-rust-alert border border-rust-alert/30">
+            <div className="text-xs px-3 py-2 rounded-lg font-medium" style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626' }}>
               {error}
             </div>
           )}
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Log call outcome, next meeting, or order update…"
+            placeholder="Log call outcome, next meeting, or dispatch update…"
             rows={2}
-            className="field-input mb-2"
+            className="field-input text-xs"
             style={{ resize: 'vertical' }}
             id="follow-up-note"
           />
-          <button
-            type="submit"
-            disabled={!note.trim() || isPending}
-            className="btn-primary text-xs"
-          >
-            {isPending ? 'Saving…' : 'Log Note'}
-          </button>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={!note.trim() || isPending}
+              className="btn btn-primary text-xs py-1.5 px-3"
+            >
+              {isPending ? 'Saving…' : 'Log Note'}
+            </button>
+          </div>
         </form>
       )}
 
       {/* Timeline entries */}
-      <div className="p-5 space-y-0">
+      <div className="pt-2 space-y-0">
         {isLoading ? (
           <div className="space-y-4 animate-pulse">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex gap-3">
-                <div className="w-6 h-6 bg-steel rounded-full" />
+                <div className="w-6 h-6 rounded-full" style={{ background: 'var(--edge)' }} />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-steel rounded w-32" />
-                  <div className="h-3 bg-steel/50 rounded w-full" />
+                  <div className="h-3 rounded w-32" style={{ background: 'var(--edge)' }} />
+                  <div className="h-3 rounded w-full" style={{ background: 'var(--surface-2)' }} />
                 </div>
               </div>
             ))}
           </div>
         ) : followUps.length === 0 ? (
-          <div className="py-6 text-center">
-            <MessageSquarePlus size={28} className="mx-auto mb-2 text-steel" />
-            <p className="text-sm italic text-slate-text/50">
-              No follow-up notes yet — log interaction details above.
+          <div className="py-8 text-center">
+            <MessageSquarePlus size={26} className="mx-auto mb-2 opacity-40" style={{ color: 'var(--ink-muted)' }} />
+            <p className="text-xs italic" style={{ color: 'var(--ink-muted)' }}>
+              No follow-up notes recorded yet. Use the log box above to record notes.
             </p>
           </div>
         ) : (
@@ -107,12 +106,13 @@ export default function FollowUpTimeline({ customerId, canAdd }) {
               {/* Timeline track */}
               <div className="flex flex-col items-center">
                 <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-steel border-2 border-signal-amber"
+                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'var(--violet-light)', border: '1.5px solid var(--violet)', color: 'var(--violet)' }}
                 >
-                  <User size={10} className="text-signal-amber" />
+                  <User size={11} />
                 </div>
                 {i < followUps.length - 1 && (
-                  <div className="w-px flex-1 mt-1 mb-1 bg-steel" />
+                  <div className="w-0.5 flex-1 my-1" style={{ background: 'var(--edge)' }} />
                 )}
               </div>
 
@@ -120,8 +120,8 @@ export default function FollowUpTimeline({ customerId, canAdd }) {
               <div className="pb-5 flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-white">{fu.created_by_name}</span>
-                    <span className="text-xs font-mono text-slate-text/50 flex items-center gap-1">
+                    <span className="text-xs font-semibold" style={{ color: 'var(--ink-dark)' }}>{fu.created_by_name}</span>
+                    <span className="text-[11px] font-mono flex items-center gap-1" style={{ color: 'var(--ink-muted)' }}>
                       <Clock size={10} />
                       {new Date(fu.created_at).toLocaleDateString('en-IN', {
                         day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
@@ -132,16 +132,17 @@ export default function FollowUpTimeline({ customerId, canAdd }) {
                     <button
                       type="button"
                       onClick={() => handleDelete(fu.id)}
-                      className="opacity-0 group-hover:opacity-100 text-rust-alert hover:bg-rust-alert/10 p-1 rounded transition-all"
+                      className="opacity-0 group-hover:opacity-100 p-1 rounded transition-all"
+                      style={{ color: '#EF4444' }}
                       title="Delete note"
                     >
                       <Trash2 size={12} />
                     </button>
                   )}
                 </div>
-                <p className="text-sm leading-relaxed text-slate-text/90">
+                <div className="text-xs leading-relaxed p-3 rounded-xl" style={{ background: 'var(--surface-2)', border: '1px solid var(--edge)', color: 'var(--ink-mid)' }}>
                   {fu.note}
-                </p>
+                </div>
               </div>
             </div>
           ))

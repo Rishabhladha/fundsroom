@@ -114,11 +114,11 @@ export default function RecordPaymentDrawer({ isOpen, onClose, challan }) {
           />
         </div>
 
-        <div className="pt-4 flex gap-3">
-          <button type="submit" disabled={isPending} className="btn-success flex-1">
+        <div className="pt-4 flex gap-3" style={{ borderTop: '1px solid var(--edge)' }}>
+          <button type="submit" disabled={isPending} className="btn btn-success flex-1">
             {isPending ? 'Saving...' : 'Record Payment'}
           </button>
-          <button type="button" onClick={onClose} disabled={isPending} className="btn-ghost flex-1">
+          <button type="button" onClick={onClose} disabled={isPending} className="btn btn-ghost flex-1">
             Cancel
           </button>
         </div>

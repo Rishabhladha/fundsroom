@@ -109,16 +109,25 @@ export async function getChallan(
       line_total: (parseFloat(item.unit_price_snapshot) * item.quantity).toFixed(2),
     }));
 
-    const grand_total = items.reduce(
+    const calculatedSubtotal = items.reduce(
       (sum, item) => sum + parseFloat(item.unit_price_snapshot) * item.quantity,
       0
     );
 
+    const ch = challanResult.rows[0];
+    const subtotal = parseFloat(ch.subtotal) > 0 ? parseFloat(ch.subtotal) : calculatedSubtotal;
+    const taxRate = parseFloat(ch.tax_rate) || 0;
+    const discountAmt = parseFloat(ch.discount_amount) || 0;
+    const taxAmt = (subtotal * taxRate) / 100;
+    const totalAmount = parseFloat(ch.total_amount) > 0 ? parseFloat(ch.total_amount) : (subtotal + taxAmt - discountAmt);
+
     res.json({
       data: {
-        ...challanResult.rows[0],
+        ...ch,
+        subtotal: subtotal.toFixed(2),
+        total_amount: totalAmount.toFixed(2),
+        grand_total: totalAmount.toFixed(2),
         items,
-        grand_total: grand_total.toFixed(2),
       },
     });
   } catch (err) {

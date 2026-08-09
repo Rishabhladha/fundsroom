@@ -10,22 +10,22 @@
 
 /* ── Design Tokens ────────────────────────────────────────────────────────── */
 :root {
-  --navy: #0D1B2E;
-  --navy-light: #162438;
-  --navy-border: #1E3148;
-  --canvas: #ECEEF2;         /* soft blue-gray canvas */
-  --surface: #F5F6F8;        /* off-white cards — not glaring white */
-  --surface-2: #EDEFF3;      /* slightly deeper surface for table heads */
-  --surface-alt: #E8EAF0;    /* active/hover surfaces */
-  --ink-dark: #1A2033;
-  --ink-mid: #3D4663;
-  --ink-soft: #6B728A;
-  --ink-muted: #9BA3B8;
-  --edge: #DDE1EC;
-  --edge-strong: #C8CEDF;
-  --violet: #6C63FF;
-  --violet-dark: #4F46E5;
-  --violet-light: #ECEEFF;
+  --navy: #F1F5F9;          /* warm off-white sidebar background */
+  --navy-light: #E2E8F0;    /* nav item hover */
+  --navy-border: #CBD5E1;   /* nav border */
+  --canvas: #E2E8F0;        /* comfortable off-white / slate canvas */
+  --surface: #F8FAFC;       /* off-white cards — zero glaring pure white */
+  --surface-2: #E2E8F0;     /* slightly deeper surface for table heads */
+  --surface-alt: #CBD5E1;   /* active/hover surfaces */
+  --ink-dark: #0F172A;      /* primary text / headers */
+  --ink-mid: #334155;       /* body text */
+  --ink-soft: #475569;      /* secondary text / icons */
+  --ink-muted: #64748B;     /* placeholder / muted */
+  --edge: #CBD5E1;          /* visible off-white card border */
+  --edge-strong: #94A3B8;   /* input border */
+  --violet: #2563EB;        /* Royal Steel Blue — neutral primary accent */
+  --violet-dark: #1D4ED8;
+  --violet-light: #E0F2FE;
   --emerald: #10B981;
   --amber: #F59E0B;
   --crimson: #EF4444;
@@ -47,18 +47,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Smooth colour transitions on interactive elements ──────────────────── */
-button, a, input, select, textarea { transition-property: background-color, color, border-color, box-shadow; transition-duration: 120ms; }
+/* ── Smooth transitions ─────────────────────────────────────────────────── */
+button, a, input, select, textarea {
+  transition-property: background-color, color, border-color, box-shadow;
+  transition-duration: 120ms;
+}
 
 /* ── Scrollbar ────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #64748B; }
 
-/* Navy panel scrollbar */
-.nav-scroll::-webkit-scrollbar-thumb { background: #1E3148; }
-.nav-scroll::-webkit-scrollbar-thumb:hover { background: #2A4260; }
+.nav-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; }
+.nav-scroll::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
 /* ── Focus ────────────────────────────────────────────────────────────────── */
 :focus-visible {
@@ -139,7 +141,7 @@ button, a, input, select, textarea { transition-property: background-color, colo
   padding: 9px 12px;
   font-size: 13.5px;
   font-weight: 500;
-  color: #8EA7C4;
+  color: #475569;
   border-radius: 8px;
   border-left: 3px solid transparent;
   transition: color 150ms ease, background-color 150ms ease;
@@ -149,30 +151,29 @@ button, a, input, select, textarea { transition-property: background-color, colo
 }
 
 .nav-item:hover {
-  color: #C5D5E8;
-  background-color: rgba(255,255,255,0.05);
+  color: #0F172A;
+  background-color: #E2E8F0;
 }
 
 .nav-item.active {
-  color: #FFFFFF;
-  background-color: rgba(108, 99, 255, 0.15);
-  border-left-color: var(--violet);
+  color: #2563EB;
+  background-color: #E0F2FE;
+  border-left-color: #2563EB;
   font-weight: 600;
 }
 
 .nav-item .nav-icon {
-  color: #4A6A8A;
+  color: #64748B;
   flex-shrink: 0;
   transition: color 150ms ease;
 }
 
-.nav-item:hover .nav-icon,
-.nav-item.active .nav-icon {
-  color: #8EA7C4;
+.nav-item:hover .nav-icon {
+  color: #0F172A;
 }
 
 .nav-item.active .nav-icon {
-  color: var(--violet);
+  color: #2563EB;
 }
 
 /* ── Input fields ─────────────────────────────────────────────────────────── */
@@ -190,12 +191,12 @@ button, a, input, select, textarea { transition-property: background-color, colo
 }
 
 .field-input:hover {
-  border-color: #A5B4FC;
+  border-color: #60A5FA;
 }
 
 .field-input:focus {
   border-color: var(--violet);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
   outline: none;
 }
 
@@ -232,11 +233,11 @@ button, a, input, select, textarea { transition-property: background-color, colo
 .btn-primary {
   background-color: var(--violet);
   color: #FFFFFF;
-  box-shadow: 0 1px 3px rgba(108,99,255,0.3), 0 0 0 0 rgba(108,99,255,0);
+  box-shadow: 0 1px 3px rgba(37,99,235,0.25);
 }
 .btn-primary:hover:not(:disabled) {
   background-color: var(--violet-dark);
-  box-shadow: 0 4px 12px rgba(108,99,255,0.35);
+  box-shadow: 0 4px 12px rgba(37,99,235,0.3);
 }
 
 .btn-ghost {
@@ -274,8 +275,8 @@ button, a, input, select, textarea { transition-property: background-color, colo
 .card {
   background: var(--surface);
   border-radius: 12px;
-  border: 1px solid var(--edge);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border: 1.5px solid var(--edge);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 /* ── Drawer animation ─────────────────────────────────────────────────────── */
@@ -293,7 +294,7 @@ button, a, input, select, textarea { transition-property: background-color, colo
   100% { background-position: 200% 0; }
 }
 .skeleton {
-  background: linear-gradient(90deg, #F3F4F6 25%, #E9EAEC 50%, #F3F4F6 75%);
+  background: linear-gradient(90deg, #E2E8F0 25%, #CBD5E1 50%, #E2E8F0 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s ease infinite;
   border-radius: 6px;

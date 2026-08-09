@@ -2,12 +2,7 @@ import { useState } from 'react';
 import { useStockMovements, useAddMovement } from './useProducts';
 import Drawer from '../../components/ui/Drawer';
 import Pagination from '../../components/ui/Pagination';
-import StatusStamp from '../../components/ui/StatusStamp';
-import { TrendingUp, TrendingDown, Edit, AlertTriangle } from 'lucide-react';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// StockMovementLog — slide-in drawer showing movement history + adjust form
-// ─────────────────────────────────────────────────────────────────────────────
+import { TrendingUp, TrendingDown, Edit3, AlertTriangle, Plus } from 'lucide-react';
 
 export default function StockMovementLog({ product, canAdjust, onClose, onEdit }) {
   const [page, setPage] = useState(1);
@@ -36,53 +31,55 @@ export default function StockMovementLog({ product, canAdjust, onClose, onEdit }
   const movements = data?.data || [];
 
   return (
-    <Drawer isOpen onClose={onClose} title={`Stock Log — ${product.sku}`} width="520px">
-      {/* Product summary */}
-      <div
-        className="rounded-lg p-4 mb-5"
-        style={{ backgroundColor: '#12151B', border: '1px solid #2B3240' }}
-      >
+    <Drawer isOpen onClose={onClose} title={`Stock Details — ${product.sku}`} width="520px">
+      {/* Product summary card */}
+      <div className="card p-5 mb-5" style={{ background: 'var(--surface-2)' }}>
         <div className="flex items-start justify-between">
           <div>
-            <div className="font-display font-semibold text-white">{product.name}</div>
-            <div className="font-mono text-xs mt-1" style={{ color: '#F2A93B' }}>{product.sku}</div>
+            <div className="font-display font-bold text-base" style={{ color: 'var(--ink-dark)' }}>{product.name}</div>
+            <div className="font-mono text-xs font-semibold px-2 py-0.5 rounded-md inline-block mt-1" style={{ background: 'var(--violet-light)', color: 'var(--violet)' }}>
+              {product.sku}
+            </div>
+            {product.category && (
+              <div className="text-xs mt-1" style={{ color: 'var(--ink-soft)' }}>Category: {product.category}</div>
+            )}
           </div>
           <div className="text-right">
             <div
               className="font-mono font-bold text-2xl"
-              style={{ color: product.low_stock ? '#F2A93B' : '#3F9967' }}
+              style={{ color: product.low_stock ? '#D97706' : product.stock === 0 ? '#EF4444' : '#10B981' }}
             >
               {product.stock}
             </div>
-            <div className="text-xs font-mono text-slate-text/50">in stock</div>
+            <div className="text-xs font-medium" style={{ color: 'var(--ink-soft)' }}>units in stock</div>
           </div>
         </div>
 
         {product.low_stock && (
           <div
-            className="mt-3 flex items-center gap-2 text-xs font-mono px-3 py-2 rounded"
-            style={{ backgroundColor: 'rgba(242,169,59,0.08)', color: '#F2A93B', border: '1px solid rgba(242,169,59,0.2)' }}
+            className="mt-3 flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl"
+            style={{ background: '#FFFBEB', color: '#D97706', border: '1px solid #FDE68A' }}
           >
-            <AlertTriangle size={12} />
-            Below minimum stock ({product.min_stock})
+            <AlertTriangle size={13} strokeWidth={2.5} />
+            Below minimum stock alert ({product.min_stock} min required)
           </div>
         )}
 
         {canAdjust && (
-          <div className="flex gap-2 mt-3">
+          <div className="flex gap-2 mt-4 pt-3" style={{ borderTop: '1px solid var(--edge)' }}>
             <button
-              className="btn-ghost text-xs flex items-center gap-1.5 flex-1"
+              className="btn btn-primary text-xs gap-1.5 flex-1"
               onClick={() => setShowAdj(!showAdj)}
             >
-              <TrendingUp size={13} />
-              {showAdj ? 'Hide Adjustment' : 'Adjust Stock'}
+              <Plus size={13} strokeWidth={2.5} />
+              {showAdj ? 'Cancel Adjustment' : 'Adjust Stock'}
             </button>
             <button
-              className="btn-ghost text-xs flex items-center gap-1.5"
+              className="btn btn-ghost text-xs gap-1.5"
               onClick={onEdit}
             >
-              <Edit size={13} />
-              Edit Product
+              <Edit3 size={13} />
+              Edit
             </button>
           </div>
         )}
@@ -92,22 +89,22 @@ export default function StockMovementLog({ product, canAdjust, onClose, onEdit }
       {showAdj && canAdjust && (
         <form
           onSubmit={handleAdjust}
-          className="rounded-lg p-4 mb-5 space-y-4"
-          style={{ backgroundColor: '#12151B', border: '1px solid #2B3240' }}
+          className="card p-5 mb-5 space-y-4"
+          style={{ border: '1.5px solid var(--violet)' }}
         >
-          <div className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#6B7280' }}>
-            Manual Stock Adjustment
+          <div className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--ink-dark)' }}>
+            Record Stock Adjustment
           </div>
 
           {adjError && (
-            <div className="text-xs px-3 py-2 rounded" style={{ backgroundColor: 'rgba(196,80,31,0.1)', color: '#C4501F' }}>
+            <div className="text-xs px-3 py-2 rounded-lg" style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA' }}>
               {adjError}
             </div>
           )}
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-slate-text/50 mb-1">Direction</label>
+              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--ink-soft)' }}>Direction</label>
               <select
                 className="field-input"
                 value={adjForm.type}
@@ -118,55 +115,49 @@ export default function StockMovementLog({ product, canAdjust, onClose, onEdit }
               </select>
             </div>
             <div>
-              <label className="block text-xs text-slate-text/50 mb-1">Quantity</label>
+              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--ink-soft)' }}>Quantity</label>
               <input
-                className="field-input font-mono"
+                className="field-input font-mono text-sm"
                 type="number"
                 min="1"
                 required
                 value={adjForm.quantity}
                 onChange={e => setAdjForm(p => ({ ...p, quantity: e.target.value }))}
-                placeholder="0"
+                placeholder="e.g. 10"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs text-slate-text/50 mb-1">Reason *</label>
+            <label className="block text-xs font-medium mb-1" style={{ color: 'var(--ink-soft)' }}>Reason / Notes *</label>
             <input
               className="field-input"
               required
               value={adjForm.reason}
               onChange={e => setAdjForm(p => ({ ...p, reason: e.target.value }))}
-              placeholder="Damaged in transit, physical count correction…"
+              placeholder="e.g. Supplier delivery, damage count..."
             />
           </div>
 
-          <button type="submit" disabled={isPending} className="btn-primary w-full text-sm">
-            {isPending ? 'Saving…' : 'Record Adjustment'}
+          <button type="submit" disabled={isPending} className="btn btn-primary w-full text-sm">
+            {isPending ? 'Saving…' : 'Submit Adjustment'}
           </button>
         </form>
       )}
 
       {/* Movement history */}
-      <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#6B7280' }}>
-        Movement History
+      <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--ink-soft)' }}>
+        Stock History Log
       </div>
 
       {isLoading ? (
-        <div className="space-y-3 animate-pulse">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex gap-3 items-start">
-              <div className="w-8 h-8 bg-steel rounded" />
-              <div className="flex-1 space-y-1.5">
-                <div className="h-3 bg-steel rounded w-3/4" />
-                <div className="h-3 bg-steel/50 rounded w-full" />
-              </div>
-            </div>
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="skeleton h-12 w-full rounded-lg" />
           ))}
         </div>
       ) : movements.length === 0 ? (
-        <div className="py-8 text-center text-sm italic" style={{ color: '#4A5568' }}>
+        <div className="p-8 text-center text-sm italic" style={{ color: 'var(--ink-muted)' }}>
           No stock movements recorded yet.
         </div>
       ) : (
@@ -174,38 +165,33 @@ export default function StockMovementLog({ product, canAdjust, onClose, onEdit }
           {movements.map((mv) => (
             <div
               key={mv.id}
-              className="flex gap-3 items-start p-3 rounded"
-              style={{ backgroundColor: '#12151B', border: '1px solid #1F2633' }}
+              className="flex gap-3 items-center p-3 rounded-xl transition-colors"
+              style={{ background: 'var(--surface-2)', border: '1px solid var(--edge)' }}
             >
-              {/* Direction icon */}
               <div
-                className="w-7 h-7 rounded flex items-center justify-center flex-shrink-0 mt-0.5"
-                style={{
-                  backgroundColor: mv.type === 'IN' ? 'rgba(63,153,103,0.1)' : 'rgba(196,80,31,0.1)',
-                  color: mv.type === 'IN' ? '#3F9967' : '#C4501F',
-                }}
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={mv.type === 'IN'
+                  ? { background: '#ECFDF5', color: '#059669', border: '1px solid #A7F3D0' }
+                  : { background: '#FEF2F2', color: '#EF4444', border: '1px solid #FECACA' }
+                }
               >
-                {mv.type === 'IN' ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
+                {mv.type === 'IN' ? <TrendingUp size={14} strokeWidth={2.5} /> : <TrendingDown size={14} strokeWidth={2.5} />}
               </div>
 
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2 mb-0.5">
+                <div className="flex items-center justify-between gap-2">
                   <span
-                    className="font-mono font-semibold text-sm"
-                    style={{ color: mv.type === 'IN' ? '#3F9967' : '#C4501F' }}
+                    className="font-mono font-bold text-sm"
+                    style={{ color: mv.type === 'IN' ? '#059669' : '#EF4444' }}
                   >
-                    {mv.type === 'IN' ? '+' : '-'}{mv.quantity}
+                    {mv.type === 'IN' ? '+' : '-'}{mv.quantity} units
                   </span>
-                  <span className="font-mono text-xs" style={{ color: '#4A5568' }}>
-                    {new Date(mv.created_at).toLocaleDateString('en-IN', {
-                      day: '2-digit', month: 'short', year: 'numeric',
-                    })}
+                  <span className="font-mono text-xs" style={{ color: 'var(--ink-muted)' }}>
+                    {new Date(mv.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                   </span>
                 </div>
-                <div className="text-xs text-slate-text/70 truncate">{mv.reason}</div>
-                <div className="text-xs font-mono mt-0.5" style={{ color: '#4A5568' }}>
-                  by {mv.created_by_name}
-                </div>
+                <div className="text-xs truncate font-medium mt-0.5" style={{ color: 'var(--ink-dark)' }}>{mv.reason}</div>
+                <div className="text-[11px] font-mono mt-0.5" style={{ color: 'var(--ink-soft)' }}>by {mv.created_by_name}</div>
               </div>
             </div>
           ))}

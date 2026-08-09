@@ -97,11 +97,11 @@ export default function ProductFormDrawer({ isOpen, onClose, product }) {
           <input className="field-input" value={form.location} onChange={e => set('location', e.target.value)} placeholder="Rack A1" />
         </Field>
 
-        <div className="flex gap-3 pt-2">
-          <button type="submit" disabled={isPending} className="btn-primary flex-1">
-            {isPending ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Product'}
+        <div className="flex gap-3 pt-3 mt-2" style={{ borderTop: '1px solid var(--edge)' }}>
+          <button type="submit" disabled={isPending} className="btn btn-primary flex-1">
+            {isPending ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Product'}
           </button>
-          <button type="button" onClick={onClose} className="btn-ghost">Cancel</button>
+          <button type="button" onClick={onClose} className="btn btn-ghost">Cancel</button>
         </div>
       </form>
     </Drawer>

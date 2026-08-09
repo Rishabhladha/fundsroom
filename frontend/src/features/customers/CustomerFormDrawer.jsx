@@ -132,11 +132,11 @@ export default function CustomerFormDrawer({ isOpen, onClose, customer }) {
           <input className="field-input" type="date" value={form.follow_up_date} onChange={e => set('follow_up_date', e.target.value)} />
         </Field>
 
-        <div className="flex gap-3 pt-2">
-          <button type="submit" disabled={isPending} className="btn-primary flex-1">
+        <div className="flex gap-3 pt-3 mt-2" style={{ borderTop: '1px solid var(--edge)' }}>
+          <button type="submit" disabled={isPending} className="btn btn-primary flex-1">
             {isPending ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Customer'}
           </button>
-          <button type="button" onClick={onClose} className="btn-ghost">
+          <button type="button" onClick={onClose} className="btn btn-ghost">
             Cancel
           </button>
         </div>

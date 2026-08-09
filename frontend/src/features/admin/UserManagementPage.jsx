@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
+import { useAuthStore } from '../../store/authStore';
 import AppShell from '../../components/layout/AppShell';
 import TopBar from '../../components/layout/TopBar';
 import Drawer from '../../components/ui/Drawer';
-import { UserPlus, UserX, UserCheck, Shield, Users } from 'lucide-react';
+import { UserPlus, UserX, UserCheck, Shield, Users, CheckCircle, Lock } from 'lucide-react';
 
 const ROLE_CONFIG = {
-  ADMIN:     { color: '#D97706', bg: 'rgba(217,119,6,0.12)',  border: 'rgba(217,119,6,0.3)',  dot: '#D97706' },
-  SALES:     { color: '#0EA5E9', bg: 'rgba(14,165,233,0.10)', border: 'rgba(14,165,233,0.3)', dot: '#0EA5E9' },
-  WAREHOUSE: { color: '#10B981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.3)', dot: '#10B981' },
-  ACCOUNTS:  { color: '#A855F7', bg: 'rgba(168,85,247,0.10)', border: 'rgba(168,85,247,0.3)', dot: '#A855F7' },
+  ADMIN:     { color: '#D97706', bg: 'rgba(217,119,6,0.10)',  border: 'rgba(217,119,6,0.25)',  dot: '#D97706' },
+  SALES:     { color: '#0EA5E9', bg: 'rgba(14,165,233,0.10)', border: 'rgba(14,165,233,0.25)', dot: '#0EA5E9' },
+  WAREHOUSE: { color: '#10B981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.25)', dot: '#10B981' },
+  ACCOUNTS:  { color: '#8B5CF6', bg: 'rgba(139,92,246,0.10)', border: 'rgba(139,92,246,0.25)', dot: '#8B5CF6' },
 };
 
 function RoleBadge({ role }) {
-  const cfg = ROLE_CONFIG[role] || { color: '#6B7280', bg: 'rgba(107,114,128,0.1)', border: 'rgba(107,114,128,0.3)', dot: '#6B7280' };
+  const cfg = ROLE_CONFIG[role] || { color: '#64748B', bg: 'rgba(100,116,139,0.1)', border: 'rgba(100,116,139,0.25)', dot: '#64748B' };
   return (
     <span
       className="inline-flex items-center gap-1.5 font-mono text-xs font-bold px-2.5 py-1 rounded-full"
@@ -27,7 +28,7 @@ function RoleBadge({ role }) {
 }
 
 function UserInitials({ name, role }) {
-  const cfg = ROLE_CONFIG[role] || { color: '#6B7280', bg: 'rgba(107,114,128,0.1)' };
+  const cfg = ROLE_CONFIG[role] || { color: '#64748B', bg: 'rgba(100,116,139,0.1)' };
   const initials = name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
   return (
     <div
@@ -41,6 +42,7 @@ function UserInitials({ name, role }) {
 
 export default function UserManagementPage() {
   const queryClient = useQueryClient();
+  const { user: currentUser } = useAuthStore();
   const [createOpen, setCreateOpen] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'SALES' });
   const [error, setError] = useState(null);
@@ -66,7 +68,11 @@ export default function UserManagementPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users-list'] }),
   });
 
-  const users = data?.data || [];
+  const rawUsers = data?.data || [];
+
+  // Sort users: ACTIVE first, DEACTIVATED at the bottom
+  const users = [...rawUsers].sort((a, b) => (b.is_active ? 1 : 0) - (a.is_active ? 1 : 0));
+
   const activeCount = users.filter(u => u.is_active).length;
 
   function handleSubmit(e) {
@@ -96,18 +102,18 @@ export default function UserManagementPage() {
             </div>
             <div>
               <div className="font-display font-bold text-lg" style={{ color: 'var(--ink-dark)' }}>{users.length}</div>
-              <div className="text-xs" style={{ color: 'var(--ink-soft)' }}>Total accounts</div>
+              <div className="text-xs font-medium" style={{ color: 'var(--ink-soft)' }}>Total accounts</div>
             </div>
           </div>
           <div className="w-px h-8" style={{ background: 'var(--edge)' }} />
           <div>
             <div className="font-mono font-bold text-lg" style={{ color: '#10B981' }}>{activeCount}</div>
-            <div className="text-xs" style={{ color: 'var(--ink-soft)' }}>Active</div>
+            <div className="text-xs font-medium" style={{ color: 'var(--ink-soft)' }}>Active</div>
           </div>
           <div className="w-px h-8" style={{ background: 'var(--edge)' }} />
           <div>
             <div className="font-mono font-bold text-lg" style={{ color: '#EF4444' }}>{users.length - activeCount}</div>
-            <div className="text-xs" style={{ color: 'var(--ink-soft)' }}>Deactivated</div>
+            <div className="text-xs font-medium" style={{ color: 'var(--ink-soft)' }}>Deactivated</div>
           </div>
         </div>
 
@@ -115,16 +121,10 @@ export default function UserManagementPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="card p-5">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="skeleton w-9 h-9 rounded-xl" />
-                  <div className="flex-1 space-y-2">
-                    <div className="skeleton h-3.5 w-3/4" />
-                    <div className="skeleton h-3 w-1/2" />
-                  </div>
-                </div>
-                <div className="skeleton h-3 w-full mb-2" />
-                <div className="skeleton h-3 w-2/3" />
+              <div key={i} className="card p-5 space-y-3">
+                <div className="skeleton h-4 w-3/4" />
+                <div className="skeleton h-3 w-1/2" />
+                <div className="skeleton h-8 w-full rounded-lg" />
               </div>
             ))}
           </div>
@@ -135,63 +135,79 @@ export default function UserManagementPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {users.map((user) => (
-              <div
-                key={user.id}
-                className="card p-5 flex flex-col gap-4"
-                style={{ opacity: user.is_active ? 1 : 0.6 }}
-              >
-                {/* Card header */}
-                <div className="flex items-start gap-3">
-                  <UserInitials name={user.name} role={user.role} />
-                  <div className="min-w-0 flex-1">
-                    <div className="font-display font-semibold text-sm truncate" style={{ color: 'var(--ink-dark)' }}>
-                      {user.name}
-                    </div>
-                    <div className="font-mono text-xs mt-0.5 truncate" style={{ color: 'var(--ink-soft)' }}>
-                      {user.email}
-                    </div>
-                  </div>
-                  {/* Active dot */}
-                  <div
-                    className="w-2 h-2 rounded-full flex-shrink-0 mt-1"
-                    style={{ background: user.is_active ? '#10B981' : '#EF4444', boxShadow: user.is_active ? '0 0 0 3px rgba(16,185,129,0.15)' : '0 0 0 3px rgba(239,68,68,0.15)' }}
-                    title={user.is_active ? 'Active' : 'Deactivated'}
-                  />
-                </div>
+            {users.map((member) => {
+              const isSelf = member.id === currentUser?.id || member.role === 'ADMIN';
 
-                {/* Role + joined */}
-                <div className="flex items-center justify-between">
-                  <RoleBadge role={user.role} />
-                  <span className="font-mono text-xs" style={{ color: 'var(--ink-muted)' }}>
-                    {new Date(user.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                  </span>
-                </div>
-
-                {/* Divider */}
-                <div style={{ borderTop: '1px solid var(--edge)' }} />
-
-                {/* Action */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (window.confirm(`${user.is_active ? 'Deactivate' : 'Activate'} account for ${user.name}?`)) {
-                      toggleStatus({ id: user.id, is_active: !user.is_active });
-                    }
-                  }}
-                  className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-colors"
-                  style={user.is_active
-                    ? { color: '#EF4444', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)' }
-                    : { color: '#10B981', background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }
-                  }
-                  onMouseEnter={e => e.currentTarget.style.background = user.is_active ? 'rgba(239,68,68,0.12)' : 'rgba(16,185,129,0.12)'}
-                  onMouseLeave={e => e.currentTarget.style.background = user.is_active ? 'rgba(239,68,68,0.06)' : 'rgba(16,185,129,0.06)'}
+              return (
+                <div
+                  key={member.id}
+                  className="card p-5 flex flex-col gap-4"
+                  style={!member.is_active ? { border: '1.5px solid #FECACA', background: '#FFF5F5' } : {}}
                 >
-                  {user.is_active ? <UserX size={13} strokeWidth={2.5} /> : <UserCheck size={13} strokeWidth={2.5} />}
-                  {user.is_active ? 'Revoke Access' : 'Activate Account'}
-                </button>
-              </div>
-            ))}
+                  {/* Card header */}
+                  <div className="flex items-start gap-3">
+                    <UserInitials name={member.name} role={member.role} />
+                    <div className="min-w-0 flex-1">
+                      <div className="font-display font-semibold text-sm truncate flex items-center gap-1.5" style={{ color: 'var(--ink-dark)' }}>
+                        <span>{member.name}</span>
+                        {member.id === currentUser?.id && (
+                          <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded" style={{ background: 'var(--violet-light)', color: 'var(--violet)' }}>
+                            You
+                          </span>
+                        )}
+                      </div>
+                      <div className="font-mono text-xs mt-0.5 truncate" style={{ color: 'var(--ink-soft)' }}>
+                        {member.email}
+                      </div>
+                    </div>
+                    {/* Status badge */}
+                    <div
+                      className="w-2.5 h-2.5 rounded-full flex-shrink-0 mt-1"
+                      style={{ background: member.is_active ? '#10B981' : '#EF4444', boxShadow: member.is_active ? '0 0 0 3px rgba(16,185,129,0.15)' : '0 0 0 3px rgba(239,68,68,0.15)' }}
+                      title={member.is_active ? 'Active' : 'Deactivated'}
+                    />
+                  </div>
+
+                  {/* Role + joined */}
+                  <div className="flex items-center justify-between">
+                    <RoleBadge role={member.role} />
+                    <span className="font-mono text-xs" style={{ color: 'var(--ink-muted)' }}>
+                      {new Date(member.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </span>
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{ borderTop: '1px solid var(--edge)' }} />
+
+                  {/* Action */}
+                  {isSelf ? (
+                    <div className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold text-slate-500 bg-slate-100 border border-slate-200">
+                      <Lock size={12} />
+                      Protected Admin Account
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (window.confirm(`${member.is_active ? 'Deactivate' : 'Activate'} account for ${member.name}?`)) {
+                          toggleStatus({ id: member.id, is_active: !member.is_active });
+                        }
+                      }}
+                      className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"
+                      style={member.is_active
+                        ? { color: '#DC2626', background: '#FEF2F2', border: '1px solid #FECACA' }
+                        : { color: '#059669', background: '#ECFDF5', border: '1px solid #A7F3D0' }
+                      }
+                      onMouseEnter={e => e.currentTarget.style.filter = 'brightness(0.95)'}
+                      onMouseLeave={e => e.currentTarget.style.filter = 'none'}
+                    >
+                      {member.is_active ? <UserX size={14} strokeWidth={2.5} /> : <UserCheck size={14} strokeWidth={2.5} />}
+                      {member.is_active ? 'Deactivate Account' : 'Activate Account'}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -246,7 +262,6 @@ export default function UserManagementPage() {
                 <option value="ACCOUNTS">ACCOUNTS</option>
                 <option value="ADMIN">ADMIN</option>
               </select>
-              {/* Role preview */}
               {form.role && (
                 <div className="mt-2">
                   <RoleBadge role={form.role} />
@@ -268,7 +283,7 @@ export default function UserManagementPage() {
             </div>
           </div>
 
-          <div className="rounded-xl px-4 py-3 text-xs" style={{ background: 'var(--violet-light)', color: 'var(--violet)', border: '1px solid #C7D2FE' }}>
+          <div className="rounded-xl px-4 py-3 text-xs" style={{ background: 'var(--violet-light)', color: 'var(--violet)', border: '1px solid #BFDBFE' }}>
             💡 Share these credentials with the employee. They can update their password anytime from their profile.
           </div>
 

@@ -98,7 +98,19 @@ export async function getCustomer(
     }>(
       `
       SELECT 
-        (SELECT COALESCE(SUM(total_amount), 0) FROM challans WHERE customer_id = $1 AND status != 'CANCELLED') as total_billed,
+        (
+          SELECT COALESCE(SUM(
+            CASE WHEN total_amount > 0 THEN total_amount 
+            ELSE (
+              SELECT COALESCE(SUM(unit_price_snapshot * quantity), 0) 
+              FROM challan_items 
+              WHERE challan_id = challans.id
+            ) 
+            END
+          ), 0) 
+          FROM challans 
+          WHERE customer_id = $1 AND status != 'CANCELLED'
+        ) as total_billed,
         (SELECT COALESCE(SUM(amount), 0) FROM payments WHERE customer_id = $1) as total_paid
       `,
       [req.params.id]
@@ -140,20 +152,22 @@ export async function getCustomerLedger(
     const ledgerResult = await query(
       `
       SELECT 
-        id, 
+        ch.id, 
         'CHALLAN' as type, 
-        challan_number as reference, 
-        total_amount as amount, 
-        created_at as date 
-      FROM challans 
-      WHERE customer_id = $1 AND status != 'CANCELLED'
+        ch.challan_number as reference, 
+        CASE WHEN ch.total_amount > 0 THEN ch.total_amount 
+             ELSE COALESCE((SELECT SUM(unit_price_snapshot * quantity) FROM challan_items WHERE challan_id = ch.id), 0)
+        END as amount, 
+        ch.created_at as date 
+      FROM challans ch
+      WHERE ch.customer_id = $1 AND ch.status != 'CANCELLED'
       
       UNION ALL
       
       SELECT 
         id, 
         'PAYMENT' as type, 
-        method as reference, 
+        method::text as reference, 
         amount, 
         payment_date as date 
       FROM payments 

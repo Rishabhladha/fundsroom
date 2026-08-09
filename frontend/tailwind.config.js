@@ -4,27 +4,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Nav / chrome
-        navy: '#0D1B2E',
-        'navy-light': '#162438',
-        'navy-border': '#1E3148',
-        // Content surfaces — off-white, not glaring
-        canvas: '#ECEEF2',
-        surface: '#F5F6F8',
-        'surface-2': '#EDEFF3',
-        'surface-alt': '#E8EAF0',
+        // Nav / chrome — warm off-white slate
+        navy: '#F1F5F9',
+        'navy-light': '#E2E8F0',
+        'navy-border': '#CBD5E1',
+        // Content surfaces
+        canvas: '#E2E8F0',
+        surface: '#F8FAFC',
+        'surface-2': '#E2E8F0',
+        'surface-alt': '#CBD5E1',
         // Text
-        'ink-dark': '#1A2033',
-        'ink-mid': '#3D4663',
-        'ink-soft': '#6B728A',
-        'ink-muted': '#9BA3B8',
+        'ink-dark': '#0F172A',
+        'ink-mid': '#334155',
+        'ink-soft': '#475569',
+        'ink-muted': '#64748B',
         // Borders
-        edge: '#DDE1EC',
-        'edge-strong': '#C8CEDF',
-        // Brand
-        violet: '#6C63FF',
-        'violet-light': '#ECEEFF',
-        'violet-dark': '#4F46E5',
+        edge: '#CBD5E1',
+        'edge-strong': '#94A3B8',
+        // Brand accent — Royal Steel Blue
+        violet: '#2563EB',
+        'violet-light': '#E0F2FE',
+        'violet-dark': '#1D4ED8',
 
         // Status colors
         emerald: '#10B981',
@@ -57,10 +57,10 @@ export default {
         },
       },
       boxShadow: {
-        'card': '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
-        'card-hover': '0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05)',
-        'drawer': '-8px 0 40px rgba(0,0,0,0.18)',
-        'dropdown': '0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)',
+        'card': '0 1px 4px rgba(0,0,0,0.06)',
+        'card-hover': '0 4px 12px rgba(0,0,0,0.08)',
+        'drawer': '-8px 0 40px rgba(0,0,0,0.15)',
+        'dropdown': '0 8px 24px rgba(0,0,0,0.12)',
       },
       borderRadius: {
         'xl': '12px',

@@ -13,7 +13,8 @@ export default function SearchInput({ value, onChange, placeholder = 'Search...'
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="field-input pl-9 pr-9"
+        className="field-input"
+        style={{ paddingLeft: '34px', paddingRight: '34px' }}
         id="search-input"
       />
       {value && (

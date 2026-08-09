@@ -1,16 +1,16 @@
-// Design tokens — FreightLedger v3
+// Design tokens — FreightLedger
 
 export const COLORS = {
-  navy: '#0D1B2E',
-  navyLight: '#162438',
-  canvas: '#F0F2F5',
-  surface: '#FFFFFF',
-  inkDark: '#111827',
-  inkMid: '#374151',
-  inkSoft: '#6B7280',
-  edge: '#E5E7EB',
-  violet: '#6C63FF',
-  violetLight: '#EEF2FF',
+  navy: '#F1F5F9',
+  navyLight: '#E2E8F0',
+  canvas: '#E2E8F0',
+  surface: '#F8FAFC',
+  inkDark: '#0F172A',
+  inkMid: '#334155',
+  inkSoft: '#475569',
+  edge: '#CBD5E1',
+  violet: '#2563EB',
+  violetLight: '#E0F2FE',
   emerald: '#10B981',
   emeraldLight: '#ECFDF5',
   amber: '#F59E0B',
@@ -26,18 +26,18 @@ export const FONTS = {
 };
 
 export const STATUS_COLORS = {
-  DRAFT:     { color: '#6B7280', bg: '#F3F4F6',  border: '#E5E7EB' },
+  DRAFT:     { color: '#475569', bg: '#E2E8F0',  border: '#CBD5E1' },
   CONFIRMED: { color: '#059669', bg: '#ECFDF5',  border: '#A7F3D0' },
   CANCELLED: { color: '#DC2626', bg: '#FEF2F2',  border: '#FECACA' },
   LEAD:      { color: '#D97706', bg: '#FFFBEB',  border: '#FDE68A' },
   ACTIVE:    { color: '#059669', bg: '#ECFDF5',  border: '#A7F3D0' },
-  INACTIVE:  { color: '#9CA3AF', bg: '#F9FAFB',  border: '#E5E7EB' },
+  INACTIVE:  { color: '#64748B', bg: '#E2E8F0',  border: '#CBD5E1' },
   IN:        { color: '#059669', bg: '#ECFDF5',  border: '#A7F3D0' },
   OUT:       { color: '#DC2626', bg: '#FEF2F2',  border: '#FECACA' },
 };
 
 export const TYPE_COLORS = {
-  RETAIL:      { color: '#6B7280', bg: '#F3F4F6' },
+  RETAIL:      { color: '#475569', bg: '#E2E8F0' },
   WHOLESALE:   { color: '#D97706', bg: '#FFFBEB' },
   DISTRIBUTOR: { color: '#0EA5E9', bg: '#F0F9FF' },
 };

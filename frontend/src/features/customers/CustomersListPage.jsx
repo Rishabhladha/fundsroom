@@ -9,56 +9,8 @@ import Pagination from '../../components/ui/Pagination';
 import SearchInput from '../../components/ui/SearchInput';
 import StatusStamp from '../../components/ui/StatusStamp';
 import CustomerFormDrawer from './CustomerFormDrawer';
-import { UserPlus, SlidersHorizontal, X } from 'lucide-react';
+import { UserPlus, Edit3, X } from 'lucide-react';
 import { TYPE_COLORS } from '../../theme/tokens';
-
-const COLUMNS = [
-  {
-    key: 'name',
-    header: 'Name',
-    render: (v, row) => (
-      <div>
-        <div className="font-medium text-sm" style={{ color: 'var(--ink-dark)' }}>{v}</div>
-        {row.business_name && <div className="text-xs mt-0.5" style={{ color: 'var(--ink-soft)' }}>{row.business_name}</div>}
-      </div>
-    ),
-  },
-  {
-    key: 'mobile',
-    header: 'Mobile',
-    mono: true,
-    render: (v) => <span className="font-mono text-sm" style={{ color: 'var(--ink-mid)' }}>{v}</span>,
-  },
-  {
-    key: 'type',
-    header: 'Type',
-    render: (v) => {
-      const t = TYPE_COLORS[v] || { color: '#6B7280', bg: '#F3F4F6' };
-      return (
-        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full" style={{ color: t.color, background: t.bg }}>
-          {v}
-        </span>
-      );
-    },
-  },
-  { key: 'status', header: 'Status', render: (v) => <StatusStamp status={v} /> },
-  {
-    key: 'gst_number',
-    header: 'GST No.',
-    render: (v) => v
-      ? <span className="font-mono text-xs" style={{ color: 'var(--ink-soft)' }}>{v}</span>
-      : <span style={{ color: 'var(--ink-muted)' }}>—</span>,
-  },
-  {
-    key: 'follow_up_date',
-    header: 'Follow-up',
-    render: (v) => v ? (
-      <span className="font-mono text-xs font-semibold" style={{ color: new Date(v) < new Date() ? '#DC2626' : '#D97706' }}>
-        {new Date(v).toLocaleDateString('en-IN')}
-      </span>
-    ) : <span style={{ color: 'var(--ink-muted)' }}>—</span>,
-  },
-];
 
 export default function CustomersListPage() {
   const navigate = useNavigate();
@@ -76,6 +28,74 @@ export default function CustomersListPage() {
   });
 
   const canEdit = user?.role === 'ADMIN' || user?.role === 'SALES';
+
+  const COLUMNS = [
+    {
+      key: 'name',
+      header: 'Name',
+      render: (v, row) => (
+        <div>
+          <div className="font-medium text-sm" style={{ color: 'var(--ink-dark)' }}>{v}</div>
+          {row.business_name && <div className="text-xs mt-0.5" style={{ color: 'var(--ink-soft)' }}>{row.business_name}</div>}
+        </div>
+      ),
+    },
+    {
+      key: 'mobile',
+      header: 'Mobile',
+      mono: true,
+      render: (v) => <span className="font-mono text-sm" style={{ color: 'var(--ink-mid)' }}>{v}</span>,
+    },
+    {
+      key: 'type',
+      header: 'Type',
+      render: (v) => {
+        const t = TYPE_COLORS[v] || { color: '#475569', bg: '#E2E8F0' };
+        return (
+          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full" style={{ color: t.color, background: t.bg }}>
+            {v}
+          </span>
+        );
+      },
+    },
+    { key: 'status', header: 'Status', render: (v) => <StatusStamp status={v} /> },
+    {
+      key: 'gst_number',
+      header: 'GST No.',
+      render: (v) => v
+        ? <span className="font-mono text-xs" style={{ color: 'var(--ink-soft)' }}>{v}</span>
+        : <span style={{ color: 'var(--ink-muted)' }}>—</span>,
+    },
+    {
+      key: 'follow_up_date',
+      header: 'Follow-up',
+      render: (v) => v ? (
+        <span className="font-mono text-xs font-semibold" style={{ color: new Date(v) < new Date() ? '#EF4444' : '#D97706' }}>
+          {new Date(v).toLocaleDateString('en-IN')}
+        </span>
+      ) : <span style={{ color: 'var(--ink-muted)' }}>—</span>,
+    },
+    ...(canEdit ? [{
+      key: 'actions',
+      header: 'Action',
+      align: 'right',
+      render: (_, row) => (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setEditCustomer(row);
+            setDrawerOpen(true);
+          }}
+          className="btn btn-ghost text-xs px-2.5 py-1 gap-1"
+        >
+          <Edit3 size={12} />
+          Edit
+        </button>
+      ),
+    }] : []),
+  ];
+
   const handleRowClick = useCallback((row) => navigate(`/customers/${row.id}`), [navigate]);
   const hasFilters = search || status || type;
 
