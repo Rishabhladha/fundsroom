@@ -67,7 +67,11 @@ export default function LoginPage() {
   return (
     <div
       className="min-h-screen flex flex-col justify-between p-4 sm:p-6"
-      style={{ background: '#F8FAFC', color: '#0F172A', fontFamily: "'Inter', sans-serif" }}
+      style={{
+        background: 'linear-gradient(135deg, #E0F2FE 0%, #F1F5F9 50%, #E2E8F0 100%)',
+        color: '#0F172A',
+        fontFamily: "'Inter', sans-serif",
+      }}
     >
       {/* Top Header */}
       <header className="max-w-xl mx-auto w-full flex items-center justify-between py-2">
@@ -87,20 +91,16 @@ export default function LoginPage() {
             </div>
           </div>
         </div>
-
-        <div className="flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>v3.0 Operational</span>
-        </div>
       </header>
 
       {/* Main Login Card */}
       <main className="flex-1 flex items-center justify-center py-6">
         <div
-          className="w-full max-w-xl bg-white rounded-2xl p-6 sm:p-8"
+          className="w-full max-w-xl rounded-2xl p-6 sm:p-8"
           style={{
-            border: '1px solid #E2E8F0',
-            boxShadow: '0 20px 40px -15px rgba(15, 23, 42, 0.07), 0 0 0 1px rgba(226, 232, 240, 0.6)',
+            background: '#F8FAFC',
+            border: '1px solid #CBD5E1',
+            boxShadow: '0 20px 50px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(203, 213, 225, 0.8)',
           }}
         >
           {/* Form Header */}
@@ -244,9 +244,9 @@ export default function LoginPage() {
                     onClick={() => handleSelectAccount(acc)}
                     className="p-3 rounded-xl text-left transition-all border relative cursor-pointer"
                     style={{
-                      background: isSelected ? '#F0F9FF' : '#F8FAFC',
-                      borderColor: isSelected ? '#0284C7' : '#E2E8F0',
-                      boxShadow: isSelected ? '0 0 0 2px rgba(2, 132, 199, 0.15)' : 'none',
+                      background: isSelected ? '#E0F2FE' : '#FFFFFF',
+                      borderColor: isSelected ? '#0284C7' : '#CBD5E1',
+                      boxShadow: isSelected ? '0 0 0 2px rgba(2, 132, 199, 0.2)' : 'none',
                     }}
                     onMouseEnter={(e) => {
                       if (!isSelected) e.currentTarget.style.borderColor = '#94A3B8';
