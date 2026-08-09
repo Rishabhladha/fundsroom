@@ -9,10 +9,10 @@
 -- Hashes generated with bcrypt cost=10 for the passwords listed above
 
 INSERT INTO users (id, name, email, password_hash, role) VALUES
-  ('a1000000-0000-0000-0000-000000000001', 'Arjun Mehta',   'admin@freightledger.com',     '$2a$10$XrruAZt275Cz.IFPSnc4x.EXgQxC5mf2MnkvhE24QYsQh6yQjQgRe', 'ADMIN'),
-  ('a1000000-0000-0000-0000-000000000002', 'Priya Sharma',  'sales@freightledger.com',     '$2a$10$2u.A2NWLzautYqLCTAPNp.TJNY0mbNKas8txwJE95VSdog3ByoDeq', 'SALES'),
-  ('a1000000-0000-0000-0000-000000000003', 'Ravi Kulkarni', 'warehouse@freightledger.com', '$2a$10$4ksq734nMUtSYFLQ7qsrJO46RRU7jIzr6N8Dqn81Co0fnXRxKnUR2', 'WAREHOUSE'),
-  ('a1000000-0000-0000-0000-000000000004', 'Deepa Iyer',    'accounts@freightledger.com',  '$2a$10$I5QRX/6sOMXuN5O5yO8GPeXObWH.yr8c1CgYPTE7Aqtdg8KLlj6vu', 'ACCOUNTS');
+  ('a1000000-0000-0000-0000-000000000001', 'Arjun Mehta',   'admin@fundsroom.com',     '$2a$10$XrruAZt275Cz.IFPSnc4x.EXgQxC5mf2MnkvhE24QYsQh6yQjQgRe', 'ADMIN'),
+  ('a1000000-0000-0000-0000-000000000002', 'Priya Sharma',  'sales@fundsroom.com',     '$2a$10$2u.A2NWLzautYqLCTAPNp.TJNY0mbNKas8txwJE95VSdog3ByoDeq', 'SALES'),
+  ('a1000000-0000-0000-0000-000000000003', 'Ravi Kulkarni', 'warehouse@fundsroom.com', '$2a$10$4ksq734nMUtSYFLQ7qsrJO46RRU7jIzr6N8Dqn81Co0fnXRxKnUR2', 'WAREHOUSE'),
+  ('a1000000-0000-0000-0000-000000000004', 'Deepa Iyer',    'accounts@fundsroom.com',  '$2a$10$I5QRX/6sOMXuN5O5yO8GPeXObWH.yr8c1CgYPTE7Aqtdg8KLlj6vu', 'ACCOUNTS');
 
 -- NOTE: The hash above is for 'password' (bcrypt default test hash).
 -- Run the following in your backend to regenerate proper hashes:

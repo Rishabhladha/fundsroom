@@ -64,10 +64,20 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
 
     requireFields(req.body, ['email', 'password']);
 
+    const searchEmail = email.toLowerCase().trim();
+    const altEmail = searchEmail.includes('@fundsroom.com')
+      ? searchEmail.replace('@fundsroom.com', '@freightledger.com')
+      : searchEmail.replace('@freightledger.com', '@fundsroom.com');
+
+    // Auto-update legacy freightledger.com domain in users table
+    await query(
+      `UPDATE users SET email = REPLACE(email, '@freightledger.com', '@fundsroom.com') WHERE email LIKE '%@freightledger.com'`
+    ).catch(() => {});
+
     const result = await query<User>(
       `SELECT id, name, email, password_hash, role, is_active
-       FROM users WHERE email = $1`,
-      [email.toLowerCase().trim()]
+       FROM users WHERE LOWER(email) = $1 OR LOWER(email) = $2`,
+      [searchEmail, altEmail]
     );
 
     const user = result.rows[0];
