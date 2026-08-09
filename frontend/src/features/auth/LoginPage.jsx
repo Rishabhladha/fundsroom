@@ -1,12 +1,27 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLogin } from './useAuth';
-import { TrendingUp, CheckCircle2, ShieldCheck, ArrowRight, Lock, Mail } from 'lucide-react';
+import { Boxes, ArrowRight, Lock, Mail, Eye, EyeOff, Shield, CheckCircle2 } from 'lucide-react';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { mutate: login, isPending, error } = useLogin();
-  const [form, setForm] = useState({ email: '', password: '' });
+
+  const [form, setForm] = useState({ email: 'admin@fundsroom.com', password: 'Admin@1234' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [activeRole, setActiveRole] = useState('ADMIN');
+
+  const DEMO_ROLES = [
+    { role: 'ADMIN', label: 'Admin', email: 'admin@fundsroom.com', pass: 'Admin@1234' },
+    { role: 'SALES', label: 'Sales', email: 'sales@fundsroom.com', pass: 'Sales@1234' },
+    { role: 'WAREHOUSE', label: 'Warehouse', email: 'warehouse@fundsroom.com', pass: 'Warehouse@1234' },
+    { role: 'ACCOUNTS', label: 'Accounts', email: 'accounts@fundsroom.com', pass: 'Accounts@1234' },
+  ];
+
+  function handleRoleSelect(item) {
+    setActiveRole(item.role);
+    setForm({ email: item.email, password: item.pass });
+  }
 
   function handleChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -17,207 +32,228 @@ export default function LoginPage() {
     login(form, { onSuccess: () => navigate('/dashboard') });
   }
 
-  const errorMsg = error?.message || (error ? 'Login failed. Check your credentials.' : null);
-
-  const FEATURES = [
-    'Transactional stock & inventory control',
-    'Dispatch challans with instant PDF export',
-    'Customer ledger & statement of accounts',
-    'Multi-role access: Admin, Sales, Warehouse, Accounts',
-  ];
-
-  const DEMO_ACCOUNTS = [
-    { email: 'admin@fundsroom.com', password: 'Admin@1234', role: 'ADMIN', color: '#2563EB' },
-    { email: 'sales@fundsroom.com', password: 'Sales@1234', role: 'SALES', color: '#0EA5E9' },
-    { email: 'warehouse@fundsroom.com', password: 'Warehouse@1234', role: 'WAREHOUSE', color: '#D97706' },
-    { email: 'accounts@fundsroom.com', password: 'Accounts@1234', role: 'ACCOUNTS', color: '#059669' },
-  ];
+  const errorMsg = error?.message || (error ? 'Login failed. Please verify your credentials.' : null);
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden"
+      className="min-h-screen flex flex-col justify-between p-6 select-none"
       style={{
-        background: 'radial-gradient(circle at 10% 15%, #E0F2FE 0%, #F1F5F9 50%, #E2E8F0 100%)',
+        background: '#F8FAFC',
+        fontFamily: "'Inter', sans-serif",
       }}
     >
-      {/* Background ambient lighting */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-40 pointer-events-none" style={{ background: '#BAE6FD' }} />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-3xl opacity-35 pointer-events-none" style={{ background: '#BFDBFE' }} />
-
-      {/* Main Container Card */}
-      <div
-        className="w-full max-w-4xl rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10"
-        style={{
-          boxShadow: '0 20px 50px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px #CBD5E1',
-          background: '#FFFFFF',
-        }}
-      >
-        {/* Left Side: Brand Panel */}
-        <div
-          className="lg:col-span-5 p-8 lg:p-10 flex flex-col justify-between relative overflow-hidden"
-          style={{
-            background: 'linear-gradient(150deg, #F8FAFC 0%, #F1F5F9 50%, #E0F2FE 100%)',
-            borderRight: '1px solid #CBD5E1',
-          }}
-        >
-          <div className="relative z-10">
-            {/* Logo & Brand Header */}
-            <div className="flex items-center gap-3 mb-8">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center text-white flex-shrink-0"
-                style={{
-                  background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
-                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
-                }}
-              >
-                <TrendingUp size={20} strokeWidth={2.5} />
-              </div>
-              <div>
-                <div className="font-display font-bold text-base tracking-widest uppercase" style={{ color: '#0F172A' }}>
-                  FUNDSROOM
-                </div>
-                <div className="text-[11px] font-mono font-medium" style={{ color: '#0284C7' }}>
-                  Operations Portal v3.0
-                </div>
-              </div>
-            </div>
-
-            <h1 className="font-display font-bold text-2xl lg:text-3xl leading-tight mb-3" style={{ color: '#0F172A', letterSpacing: '-0.03em' }}>
-              Enterprise Operations & ERP Ledger.
-            </h1>
-            <p className="text-xs leading-relaxed mb-8 font-normal" style={{ color: '#334155' }}>
-              Streamlined inventory tracking, dispatch challans, and customer ledgers for your enterprise.
-            </p>
-
-            <div className="space-y-3.5">
-              {FEATURES.map((f) => (
-                <div key={f} className="flex items-start gap-2.5 text-xs font-medium" style={{ color: '#1E293B' }}>
-                  <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: '#DCFCE7' }}>
-                    <CheckCircle2 size={13} style={{ color: '#059669' }} />
-                  </div>
-                  <span>{f}</span>
-                </div>
-              ))}
-            </div>
+      {/* Top Navigation Bar */}
+      <header className="max-w-5xl mx-auto w-full flex items-center justify-between py-2">
+        <div className="flex items-center gap-2.5">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
+            style={{
+              background: '#2563EB',
+              boxShadow: '0 2px 8px rgba(37, 99, 235, 0.25)',
+            }}
+          >
+            <Boxes size={16} strokeWidth={2.5} />
           </div>
-
-          <div className="relative z-10 pt-6 mt-8 flex items-center justify-between text-[11px] font-mono border-t text-slate-600" style={{ borderColor: '#CBD5E1' }}>
-            <span className="font-medium" style={{ color: '#0369A1' }}>Encrypted Workspace</span>
-            <span className="flex items-center gap-1.5 font-semibold" style={{ color: '#059669' }}>
-              <ShieldCheck size={13} /> Production Ready
+          <div>
+            <span className="font-display font-bold text-sm tracking-wider uppercase" style={{ color: '#0F172A' }}>
+              FUNDSROOM
+            </span>
+            <span className="text-xs font-mono ml-2 px-2 py-0.5 rounded font-medium" style={{ background: '#E0F2FE', color: '#0284C7' }}>
+              v3.0
             </span>
           </div>
         </div>
 
-        {/* Right Side: Login Form */}
-        <div className="lg:col-span-7 p-8 lg:p-10 flex flex-col justify-center bg-white">
-          <div className="max-w-md mx-auto w-full">
-            <div className="mb-6">
-              <h2 className="font-display font-bold text-2xl mb-1" style={{ color: '#0F172A', letterSpacing: '-0.02em' }}>
-                Sign In
-              </h2>
-              <p className="text-xs" style={{ color: '#475569' }}>
-                Enter your FundsRoom authorized credentials to enter the workspace.
-              </p>
+        <div className="flex items-center gap-2 text-xs font-mono" style={{ color: '#64748B' }}>
+          <span className="w-2 h-2 rounded-full inline-block animate-pulse" style={{ background: '#10B981' }} />
+          <span>SYSTEM ONLINE</span>
+        </div>
+      </header>
+
+      {/* Main Authentication Card */}
+      <main className="flex-1 flex items-center justify-center py-8">
+        <div
+          className="w-full max-w-md bg-white rounded-2xl p-8 transition-all"
+          style={{
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(226, 232, 240, 0.8)',
+          }}
+        >
+          {/* Card Header */}
+          <div className="mb-6 text-center">
+            <h1 className="font-display font-bold text-2xl" style={{ color: '#0F172A', letterSpacing: '-0.02em' }}>
+              Welcome to FundsRoom
+            </h1>
+            <p className="text-xs mt-1.5" style={{ color: '#64748B' }}>
+              Sign in to manage inventory, dispatches, and customer ledgers
+            </p>
+          </div>
+
+          {/* Segmented Quick Demo Selector */}
+          <div className="mb-6">
+            <div className="text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center justify-between" style={{ color: '#64748B' }}>
+              <span>Quick Demo Account</span>
+              <span className="text-[10px] text-blue-600 font-mono font-medium">Click role to auto-fill</span>
+            </div>
+            <div className="grid grid-cols-4 gap-1 p-1 rounded-xl" style={{ background: '#F1F5F9', border: '1px solid #E2E8F0' }}>
+              {DEMO_ROLES.map((item) => {
+                const isActive = activeRole === item.role;
+                return (
+                  <button
+                    key={item.role}
+                    type="button"
+                    onClick={() => handleRoleSelect(item)}
+                    className="py-1.5 rounded-lg text-xs font-semibold transition-all text-center"
+                    style={
+                      isActive
+                        ? { background: '#FFFFFF', color: '#2563EB', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }
+                        : { color: '#64748B' }
+                    }
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {errorMsg && (
+              <div
+                className="px-4 py-3 rounded-xl text-xs font-medium flex items-start gap-2"
+                style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626' }}
+              >
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#475569' }}>
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#94A3B8' }} />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="name@fundsroom.com"
+                  className="w-full py-2.5 rounded-xl text-sm outline-none transition-all font-sans"
+                  style={{
+                    paddingLeft: '38px',
+                    paddingRight: '14px',
+                    border: '1.5px solid #CBD5E1',
+                    background: '#FFFFFF',
+                    color: '#0F172A',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#2563EB';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.12)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#CBD5E1';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
+              </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {errorMsg && (
-                <div className="px-4 py-3 rounded-xl text-xs font-semibold" style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626' }}>
-                  {errorMsg}
-                </div>
-              )}
-
-              <div>
-                <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#475569' }}>
-                  Work Email Address
-                </label>
-                <div className="relative">
-                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#94A3B8' }} />
-                  <input
-                    id="email" name="email" type="email"
-                    autoComplete="email" required
-                    value={form.email} onChange={handleChange}
-                    placeholder="name@fundsroom.com"
-                    className="field-input"
-                    style={{ paddingLeft: '34px' }}
-                  />
-                </div>
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#475569' }}>
+                Password
+              </label>
+              <div className="relative">
+                <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#94A3B8' }} />
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  required
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  className="w-full py-2.5 rounded-xl text-sm outline-none transition-all font-sans"
+                  style={{
+                    paddingLeft: '38px',
+                    paddingRight: '38px',
+                    border: '1.5px solid #CBD5E1',
+                    background: '#FFFFFF',
+                    color: '#0F172A',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#2563EB';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.12)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#CBD5E1';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                  tabIndex={-1}
+                  aria-label="Toggle password visibility"
+                >
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
               </div>
+            </div>
 
-              <div>
-                <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#475569' }}>
-                  Password
-                </label>
-                <div className="relative">
-                  <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#94A3B8' }} />
-                  <input
-                    id="password" name="password" type="password"
-                    autoComplete="current-password" required
-                    value={form.password} onChange={handleChange}
-                    placeholder="••••••••"
-                    className="field-input"
-                    style={{ paddingLeft: '34px' }}
-                  />
-                </div>
-              </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isPending}
+              className="w-full py-2.5 mt-2 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all cursor-pointer"
+              style={{
+                background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+                boxShadow: '0 4px 14px rgba(37, 99, 235, 0.25)',
+                opacity: isPending ? 0.75 : 1,
+              }}
+            >
+              {isPending ? 'Signing in…' : 'Sign In to Workspace'}
+              {!isPending && <ArrowRight size={15} />}
+            </button>
+          </form>
 
-              <button
-                type="submit"
-                disabled={isPending}
-                className="btn btn-primary w-full py-2.5 text-sm gap-2 font-semibold transition-all"
-                style={{
-                  background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
-                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
-                }}
-              >
-                {isPending ? 'Authenticating…' : 'Sign In to FundsRoom'}
-                {!isPending && <ArrowRight size={15} />}
-              </button>
-            </form>
-
-            {/* Quick Demo Accounts */}
-            <div className="mt-7 pt-5" style={{ borderTop: '1px solid #E2E8F0' }}>
-              <div className="text-[11px] font-semibold uppercase tracking-wider mb-2.5" style={{ color: '#475569' }}>
-                One-Click Quick Login (Demo Roles)
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {DEMO_ACCOUNTS.map(({ email, password, role, color }) => (
-                  <button
-                    key={role}
-                    type="button"
-                    onClick={() => setForm({ email, password })}
-                    className="p-2.5 rounded-xl text-left border transition-all flex flex-col justify-between"
-                    style={{
-                      background: form.email === email ? '#F0F9FF' : '#F8FAFC',
-                      borderColor: form.email === email ? '#0284C7' : '#E2E8F0',
-                      boxShadow: form.email === email ? '0 0 0 2px rgba(2, 132, 199, 0.2)' : 'none',
-                    }}
-                    onMouseEnter={e => {
-                      if (form.email !== email) e.currentTarget.style.borderColor = '#94A3B8';
-                    }}
-                    onMouseLeave={e => {
-                      if (form.email !== email) e.currentTarget.style.borderColor = '#E2E8F0';
-                    }}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span
-                        className="text-[10px] font-bold px-2 py-0.5 rounded-md font-mono"
-                        style={{ background: color + '15', color }}
-                      >
-                        {role}
-                      </span>
-                    </div>
-                    <div className="text-[11px] font-mono truncate" style={{ color: '#475569' }}>
-                      {email.split('@')[0]}
-                    </div>
-                  </button>
-                ))}
-              </div>
+          {/* Key Features Badges */}
+          <div className="mt-6 pt-5 grid grid-cols-2 gap-2 text-[11px] font-medium" style={{ borderTop: '1px solid #F1F5F9', color: '#475569' }}>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 size={13} className="text-emerald-600" />
+              <span>Real-time Inventory</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 size={13} className="text-emerald-600" />
+              <span>Dispatch Challans</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 size={13} className="text-emerald-600" />
+              <span>Customer Ledgers</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 size={13} className="text-emerald-600" />
+              <span>Role Access Control</span>
             </div>
           </div>
         </div>
-      </div>
+      </main>
+
+      {/* Footer Security Badge */}
+      <footer className="max-w-5xl mx-auto w-full text-center py-2 text-[11px] font-mono flex items-center justify-center gap-2" style={{ color: '#94A3B8' }}>
+        <Shield size={12} className="text-emerald-600" />
+        <span>256-Bit SSL Encrypted Session</span>
+        <span>•</span>
+        <span>FundsRoom Operations Portal</span>
+      </footer>
     </div>
   );
 }
