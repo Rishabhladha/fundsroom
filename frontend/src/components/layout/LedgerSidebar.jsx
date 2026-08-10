@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Package, FileText,
   ArrowLeftRight, UserCog, LogOut, Settings, TrendingUp,
@@ -44,8 +44,9 @@ export default function LedgerSidebar() {
         }}
       >
         {/* Logo */}
-        <div
-          className="flex items-center gap-3 px-5 py-5"
+        <Link
+          to="/dashboard"
+          className="flex items-center gap-3 px-5 py-5 transition-opacity hover:opacity-90 cursor-pointer"
           style={{ borderBottom: '1px solid var(--edge)' }}
         >
           <div
@@ -62,7 +63,7 @@ export default function LedgerSidebar() {
               Operations Portal
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Nav section label */}
         <div className="px-5 pt-5 pb-2">

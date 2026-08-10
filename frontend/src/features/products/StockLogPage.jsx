@@ -95,11 +95,6 @@ export default function StockLogPage() {
               </button>
             </div>
           )}
-
-          <div className="ml-auto text-xs flex items-center gap-1.5 font-medium" style={{ color: 'var(--ink-soft)' }}>
-            <Info size={13} style={{ color: 'var(--violet)' }} />
-            <span>Tip: Click any product name in the table to isolate its history</span>
-          </div>
         </div>
 
         {/* Table */}
@@ -118,7 +113,7 @@ export default function StockLogPage() {
                 <tr>
                   <th>Date</th>
                   <th>SKU</th>
-                  <th>Product (Click to Filter)</th>
+                  <th>Product</th>
                   <th>Direction</th>
                   <th className="text-right">Qty</th>
                   <th>Reason / Ref</th>

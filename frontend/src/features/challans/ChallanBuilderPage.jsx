@@ -21,9 +21,11 @@ export default function ChallanBuilderPage() {
   const [discountAmount, setDiscountAmount] = useState('');
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
   const [createdCustomer, setCreatedCustomer] = useState(null);
+  const [isCustomerOpen, setIsCustomerOpen] = useState(false);
+  const [isProductOpen, setIsProductOpen] = useState(false);
 
-  const { data: customersData } = useCustomers({ search: customerSearch || undefined, status: 'ACTIVE', limit: 20 });
-  const { data: productsData } = useProducts({ search: productSearch || undefined, limit: 20 });
+  const { data: customersData } = useCustomers({ search: customerSearch || undefined, limit: 50 });
+  const { data: productsData } = useProducts({ search: productSearch || undefined, limit: 50 });
 
   const customers = customersData?.data || [];
   const products = productsData?.data || [];
@@ -122,58 +124,76 @@ export default function ChallanBuilderPage() {
                   </button>
                 </div>
 
-                <SearchInput value={customerSearch} onChange={setCustomerSearch} placeholder="Search active customers…" />
+                {!selectedCustomer && (
+                  <>
+                    <SearchInput
+                      value={customerSearch}
+                      onChange={(val) => { setCustomerSearch(val); setIsCustomerOpen(true); }}
+                      onFocus={() => setIsCustomerOpen(true)}
+                      onClick={() => setIsCustomerOpen(true)}
+                      onBlur={() => setTimeout(() => setIsCustomerOpen(false), 200)}
+                      placeholder="Search total customers by name, mobile, or business..."
+                    />
 
-                {customerSearch && customers.length > 0 && (
-                  <div className="mt-2 rounded-xl overflow-hidden shadow-dropdown" style={{ border: '1px solid var(--edge)' }}>
-                    {customers.slice(0, 8).map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => { setCustomerId(c.id); setCustomerSearch(''); setCreatedCustomer(c); }}
-                        className="w-full text-left px-4 py-3 transition-colors flex items-center justify-between"
-                        style={{ borderBottom: '1px solid var(--edge)' }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'var(--violet-light)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                      >
-                        <div>
-                          <div className="font-medium text-sm" style={{ color: 'var(--ink-dark)' }}>{c.name}</div>
-                          <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--ink-soft)' }}>{c.mobile} · {c.type}</div>
+                    {isCustomerOpen && (
+                      customers.length > 0 ? (
+                        <div className="mt-2 rounded-xl overflow-hidden shadow-dropdown max-h-60 overflow-y-auto" style={{ border: '1px solid var(--edge)' }}>
+                          {customers.slice(0, 50).map((c) => (
+                            <button
+                              key={c.id}
+                              type="button"
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                setCustomerId(c.id);
+                                setCustomerSearch('');
+                                setCreatedCustomer(c);
+                                setIsCustomerOpen(false);
+                                if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+                              }}
+                              className="w-full text-left px-4 py-3 transition-colors flex items-center justify-between"
+                              style={{ borderBottom: '1px solid var(--edge)' }}
+                              onMouseEnter={e => e.currentTarget.style.background = 'var(--violet-light)'}
+                              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                            >
+                              <div>
+                                <div className="font-medium text-sm" style={{ color: 'var(--ink-dark)' }}>{c.name}</div>
+                                <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--ink-soft)' }}>{c.mobile} · {c.type}</div>
+                              </div>
+                              {c.business_name && (
+                                <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--ink-soft)' }}>
+                                  {c.business_name}
+                                </span>
+                              )}
+                            </button>
+                          ))}
                         </div>
-                        {c.business_name && (
-                          <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--ink-soft)' }}>
-                            {c.business_name}
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
+                      ) : (
+                        <div className="mt-3 p-4 text-center rounded-xl" style={{ border: '1px border-dashed var(--edge)', background: 'var(--surface-2)' }}>
+                          <p className="text-xs mb-2.5" style={{ color: 'var(--ink-soft)' }}>
+                            {customerSearch ? `No customer matching "${customerSearch}" found.` : 'No customers found.'}
+                          </p>
+                          <button
+                            type="button"
+                            onMouseDown={(e) => { e.preventDefault(); setIsAddCustomerOpen(true); }}
+                            className="btn btn-primary py-1.5 px-3 text-xs gap-1.5 inline-flex items-center"
+                          >
+                            <Plus size={13} /> Add New Customer
+                          </button>
+                        </div>
+                      )
+                    )}
+                  </>
                 )}
 
-                {customerSearch && customers.length === 0 && (
-                  <div className="mt-3 p-4 text-center rounded-xl" style={{ border: '1px border-dashed var(--edge)', background: 'var(--surface-2)' }}>
-                    <p className="text-xs mb-2.5" style={{ color: 'var(--ink-soft)' }}>
-                      No active customer matching &ldquo;{customerSearch}&rdquo; found.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setIsAddCustomerOpen(true)}
-                      className="btn btn-primary py-1.5 px-3 text-xs gap-1.5 inline-flex items-center"
-                    >
-                      <Plus size={13} /> Create &ldquo;{customerSearch}&rdquo; as New Customer
-                    </button>
-                  </div>
-                )}
-
-                {selectedCustomer && !customerSearch && (
-                  <div className="mt-3 flex items-center justify-between px-3.5 py-2.5 rounded-xl" style={{ background: '#ECFDF5', border: '1px solid #A7F3D0' }}>
+                {selectedCustomer && (
+                  <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl" style={{ background: '#ECFDF5', border: '1px solid #A7F3D0' }}>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold" style={{ color: '#059669' }}>✓ {selectedCustomer.name}</span>
                       {selectedCustomer.mobile && (
                         <span className="text-xs font-mono text-emerald-700">({selectedCustomer.mobile})</span>
                       )}
                     </div>
-                    <button type="button" onClick={() => { setCustomerId(''); setCreatedCustomer(null); }} className="text-xs font-medium transition-colors" style={{ color: '#059669' }}>Change</button>
+                    <button type="button" onClick={() => { setCustomerId(''); setCreatedCustomer(null); setIsCustomerOpen(true); }} className="text-xs font-medium transition-colors" style={{ color: '#059669' }}>Change</button>
                   </div>
                 )}
               </div>
@@ -187,17 +207,28 @@ export default function ChallanBuilderPage() {
                   <span className="font-display font-semibold text-sm" style={{ color: 'var(--ink-dark)' }}>Add Products</span>
                 </div>
 
-                <SearchInput value={productSearch} onChange={setProductSearch} placeholder="Search by name or SKU…" />
+                <SearchInput
+                  value={productSearch}
+                  onChange={(val) => { setProductSearch(val); setIsProductOpen(true); }}
+                  onFocus={() => setIsProductOpen(true)}
+                  onClick={() => setIsProductOpen(true)}
+                  onBlur={() => setTimeout(() => setIsProductOpen(false), 200)}
+                  placeholder="Search product by name or SKU…"
+                />
 
-                {productSearch && (
-                  <div className="mt-2 rounded-xl overflow-hidden shadow-dropdown" style={{ border: '1px solid var(--edge)' }}>
-                    {products.length === 0
-                      ? <div className="px-4 py-4 text-sm italic" style={{ color: 'var(--ink-muted)' }}>No products found.</div>
-                      : products.slice(0, 10).map((p) => (
+                {isProductOpen && (
+                  products.length > 0 ? (
+                    <div className="mt-2 rounded-xl overflow-hidden shadow-dropdown max-h-60 overflow-y-auto" style={{ border: '1px solid var(--edge)' }}>
+                      {products.slice(0, 50).map((p) => (
                         <button
                           key={p.id}
                           type="button"
-                          onClick={() => addProduct(p)}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            addProduct(p);
+                            setIsProductOpen(false);
+                            if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+                          }}
                           className="w-full text-left px-4 py-3 flex items-center justify-between transition-colors"
                           style={{ borderBottom: '1px solid var(--edge)' }}
                           onMouseEnter={e => e.currentTarget.style.background = 'var(--violet-light)'}
@@ -212,11 +243,17 @@ export default function ChallanBuilderPage() {
                               ₹{parseFloat(p.unit_price).toFixed(2)} · Stock: {p.stock}
                             </div>
                           </div>
-                          <Plus size={14} style={{ color: 'var(--violet)', flexShrink: 0 }} />
+                          <div className="flex items-center gap-1 font-semibold text-xs" style={{ color: 'var(--violet)' }}>
+                            <Plus size={14} /> Add
+                          </div>
                         </button>
-                      ))
-                    }
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-2 p-4 text-center text-xs rounded-xl" style={{ color: 'var(--ink-soft)', background: 'var(--surface-2)', border: '1px border-dashed var(--edge)' }}>
+                      {productSearch ? `No products matching "${productSearch}" found.` : 'No products available.'}
+                    </div>
+                  )
                 )}
               </div>
 

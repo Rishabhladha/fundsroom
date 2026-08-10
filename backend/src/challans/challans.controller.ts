@@ -17,12 +17,18 @@ export async function listChallans(
 ): Promise<void> {
   try {
     const { page, limit, offset } = parsePagination(req);
-    const { status, customerId, from, to } = req.query as Record<string, string>;
+    const { search, status, customerId, from, to } = req.query as Record<string, string>;
 
     const conditions: string[] = [];
     const params: unknown[] = [];
     let i = 1;
 
+    if (search && search.trim()) {
+      const q = search.trim();
+      conditions.push(`(ch.challan_number ILIKE $${i} OR c.name ILIKE $${i} OR c.business_name ILIKE $${i})`);
+      params.push(`%${q}%`);
+      i++;
+    }
     if (status) {
       conditions.push(`ch.status = $${i}`);
       params.push(status.toUpperCase());
@@ -47,7 +53,10 @@ export async function listChallans(
     const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
     const countResult = await query<{ count: string }>(
-      `SELECT COUNT(*) AS count FROM challans ch ${where}`,
+      `SELECT COUNT(*) AS count 
+       FROM challans ch 
+       JOIN customers c ON c.id = ch.customer_id 
+       ${where}`,
       params
     );
     const total = parseInt(countResult.rows[0].count);

@@ -1,6 +1,6 @@
 import { Search, X } from 'lucide-react';
 
-export default function SearchInput({ value, onChange, placeholder = 'Search...' }) {
+export default function SearchInput({ value, onChange, placeholder = 'Search...', onFocus, onBlur, onClick, ...props }) {
   return (
     <div className="relative" style={{ minWidth: '260px' }}>
       <Search
@@ -12,10 +12,13 @@ export default function SearchInput({ value, onChange, placeholder = 'Search...'
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onClick={onClick}
         placeholder={placeholder}
         className="field-input"
         style={{ paddingLeft: '34px', paddingRight: '34px' }}
-        id="search-input"
+        {...props}
       />
       {value && (
         <button

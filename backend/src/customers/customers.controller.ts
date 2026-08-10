@@ -27,22 +27,23 @@ export async function listCustomers(
 
     // Build dynamic WHERE clauses
     const conditions: string[] = [];
-    const params: unknown[] = [];
+    const whereParams: unknown[] = [];
     let i = 1;
 
-    if (search) {
+    if (search && search.trim()) {
+      const q = search.trim();
       conditions.push(`(c.name ILIKE $${i} OR c.mobile ILIKE $${i} OR c.business_name ILIKE $${i})`);
-      params.push(`%${search}%`);
+      whereParams.push(`%${q}%`);
       i++;
     }
     if (status && isValidEnum(status, CUSTOMER_STATUSES)) {
       conditions.push(`c.status = $${i}`);
-      params.push(status);
+      whereParams.push(status);
       i++;
     }
     if (type && isValidEnum(type, CUSTOMER_TYPES)) {
       conditions.push(`c.type = $${i}`);
-      params.push(type);
+      whereParams.push(type);
       i++;
     }
 
@@ -51,17 +52,34 @@ export async function listCustomers(
     // Count total (without pagination)
     const countResult = await query<{ count: string }>(
       `SELECT COUNT(*) AS count FROM customers c ${where}`,
-      params
+      whereParams
     );
     const total = parseInt(countResult.rows[0].count);
 
-    // Fetch page
+    const queryParams = [...whereParams];
+    let orderBy = 'ORDER BY c.created_at DESC';
+
+    if (search && search.trim()) {
+      queryParams.push(`${search.trim()}%`); // index i
+      const prefixIdx = i;
+      orderBy = `ORDER BY 
+        CASE 
+          WHEN c.name ILIKE $${prefixIdx} THEN 1
+          WHEN c.business_name ILIKE $${prefixIdx} THEN 2
+          WHEN c.name ILIKE $1 THEN 3
+          WHEN c.business_name ILIKE $1 THEN 4
+          ELSE 5
+        END,
+        c.name ASC, c.created_at DESC`;
+      i++;
+    }
+
     const dataResult = await query<Customer>(
       `SELECT c.* FROM customers c
        ${where}
-       ORDER BY c.created_at DESC
+       ${orderBy}
        LIMIT $${i} OFFSET $${i + 1}`,
-      [...params, limit, offset]
+      [...queryParams, limit, offset]
     );
 
     res.json({

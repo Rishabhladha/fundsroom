@@ -7,6 +7,7 @@ import TopBar from '../../components/layout/TopBar';
 import DataTable from '../../components/ui/DataTable';
 import Pagination from '../../components/ui/Pagination';
 import StatusStamp from '../../components/ui/StatusStamp';
+import SearchInput from '../../components/ui/SearchInput';
 import { FilePlus, X } from 'lucide-react';
 
 const COLUMNS = [
@@ -53,14 +54,15 @@ const COLUMNS = [
 export default function ChallansListPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
+  const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [page, setPage] = useState(1);
 
   const canCreate = user?.role === 'ADMIN' || user?.role === 'SALES';
-  const { data, isLoading } = useChallans({ status: status || undefined, from: from || undefined, to: to || undefined, page, limit: 20 });
-  const hasFilters = status || from || to;
+  const { data, isLoading } = useChallans({ search: search || undefined, status: status || undefined, from: from || undefined, to: to || undefined, page, limit: 20 });
+  const hasFilters = search || status || from || to;
 
   return (
     <AppShell>
@@ -77,6 +79,12 @@ export default function ChallansListPage() {
       <div className="flex-1 overflow-auto p-6" style={{ background: 'var(--canvas)' }}>
         {/* Filters */}
         <div className="card flex flex-wrap items-center gap-3 p-3 mb-4">
+          <SearchInput
+            value={search}
+            onChange={(val) => { setSearch(val); setPage(1); }}
+            placeholder="Search by Challan No. or Customer Name..."
+          />
+
           <select
             value={status}
             onChange={e => { setStatus(e.target.value); setPage(1); }}
@@ -113,7 +121,7 @@ export default function ChallansListPage() {
           </div>
 
           {hasFilters && (
-            <button onClick={() => { setStatus(''); setFrom(''); setTo(''); setPage(1); }} className="btn btn-ghost text-xs gap-1.5">
+            <button onClick={() => { setSearch(''); setStatus(''); setFrom(''); setTo(''); setPage(1); }} className="btn btn-ghost text-xs gap-1.5">
               <X size={12} /> Clear
             </button>
           )}

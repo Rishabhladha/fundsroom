@@ -25,17 +25,18 @@ export async function listProducts(
     const { search, category, lowStock } = req.query as Record<string, string>;
 
     const conditions: string[] = ['p.is_active = true'];
-    const params: unknown[] = [];
+    const whereParams: unknown[] = [];
     let i = 1;
 
-    if (search) {
+    if (search && search.trim()) {
+      const q = search.trim();
       conditions.push(`(p.name ILIKE $${i} OR p.sku ILIKE $${i})`);
-      params.push(`%${search}%`);
+      whereParams.push(`%${q}%`);
       i++;
     }
     if (category) {
       conditions.push(`p.category = $${i}`);
-      params.push(category.toUpperCase());
+      whereParams.push(category.toUpperCase());
       i++;
     }
     if (lowStock === 'true') {
@@ -46,17 +47,35 @@ export async function listProducts(
 
     const countResult = await query<{ count: string }>(
       `SELECT COUNT(*) AS count FROM products p ${where}`,
-      params
+      whereParams
     );
     const total = parseInt(countResult.rows[0].count);
+
+    const queryParams = [...whereParams];
+    let orderBy = 'ORDER BY p.category, p.name';
+
+    if (search && search.trim()) {
+      queryParams.push(`${search.trim()}%`); // index i
+      const prefixIdx = i;
+      orderBy = `ORDER BY 
+        CASE 
+          WHEN p.name ILIKE $${prefixIdx} THEN 1
+          WHEN p.sku ILIKE $${prefixIdx} THEN 2
+          WHEN p.name ILIKE $1 THEN 3
+          WHEN p.sku ILIKE $1 THEN 4
+          ELSE 5
+        END,
+        p.name ASC`;
+      i++;
+    }
 
     const dataResult = await query<Product>(
       `SELECT p.*, (p.stock <= p.min_stock) AS low_stock
        FROM products p
        ${where}
-       ORDER BY p.category, p.name
+       ${orderBy}
        LIMIT $${i} OFFSET $${i + 1}`,
-      [...params, limit, offset]
+      [...queryParams, limit, offset]
     );
 
     res.json({

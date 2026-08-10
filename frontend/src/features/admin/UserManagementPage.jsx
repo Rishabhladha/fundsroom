@@ -189,9 +189,7 @@ export default function UserManagementPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        if (window.confirm(`${member.is_active ? 'Deactivate' : 'Activate'} account for ${member.name}?`)) {
-                          toggleStatus({ id: member.id, is_active: !member.is_active });
-                        }
+                        toggleStatus({ id: member.id, is_active: !member.is_active });
                       }}
                       className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"
                       style={member.is_active
